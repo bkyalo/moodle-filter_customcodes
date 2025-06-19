@@ -1,11 +1,9 @@
 <img src="pix/logo.png" align="right" />
 
-Custom FilterCodes Plugin for Moodle
-===================================
-
-This is a custom version of the Moodle FilterCodes plugin with additional features.
+FilterCodes filter plugin for Moodle
+====================================
 ![PHP](https://img.shields.io/badge/PHP-v5.6%20to%20v8.3-blue.svg)
-![Moodle](https://img.shields.io/badge/Moodle-v2.7%20to%20v5.0-orange.svg)
+![Moodle](https://img.shields.io/badge/Moodle-v2.7%20to%20v4.4-orange.svg)
 [![GitHub Issues](https://img.shields.io/github/issues/michael-milette/moodle-filter_filtercodes.svg)](https://github.com/michael-milette/moodle-filter_filtercodes/issues)
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-green.svg)](#contributing)
 [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](#license)
@@ -48,9 +46,8 @@ This is a custom version of the Moodle FilterCodes plugin with additional featur
   - [Enabling FilterCodes in the Custom Menu / Primary Navigation](#enabling-filtercodes-in-the-custom-menu--primary-navigation)
     - [Technique A: Patching Moodle core](#technique-a-patching-moodle-core)
     - [Technique B: Patching your Moodle theme](#technique-b-patching-your-moodle-theme)
-      - [For themes based on **boost** (Moodle 5.0)](#for-themes-based-on-boost-moodle-50)
-      - [For themes based on **boost** (Moodle 4.0 to 4.5)](#for-themes-based-on-boost-moodle-40-to-45)
-      - [For themes based on **boost** (Moodle 3.2 to 3.11 and some 4.0+ to 4.6 themes)](#for-themes-based-on-boost-moodle-32-to-311-and-some-40-to-46-themes)
+      - [For themes based on **boost** (Moodle 4.0 and later)](#for-themes-based-on-boost-moodle-40-and-later)
+      - [For themes based on **boost** (Moodle 3.2 to 3.11 and some 4.0+)](#for-themes-based-on-boost-moodle-32-to-311-and-some-40)
       - [For themes based on the older **bootstrapbase** (Moodle 2.7 to 3.6)](#for-themes-based-on-the-older-bootstrapbase-moodle-27-to-36)
   - [Enabling FilterCodes in HEAD](#enabling-filtercodes-in-head)
   - [Scrape'ing content](#scrapeing-content)
@@ -161,12 +158,6 @@ IMPORTANT: This STABLE release has been tested on many Moodle sites. Although we
 
 FilterCodes are meant to be entered as regular text in the Moodle WYSIWYG editor though they will work equally well if entered in the HTML code view.
 
-## Custom Features
-
-### [listmodules] Tag
-
-Adds a list of course modules as cards. Simply add `[listmodules]` to any course content to display a list of course modules.
-
 ## List of FilterCode tags
 
 ### Creating FilterCodes Documentation
@@ -179,9 +170,6 @@ Adds a list of course modules as cards. Simply add `[listmodules]` to any course
 * {firstname} : Display the user's first name.
 * {surname} or {lastname} : Display the user's surname (family/last name).
 * {fullname} : Display the user's first name and surname.
-* {middlename} : Display the user's middle name.
-* {firstnamephonetic} : Display the user's first name in phonetic.
-* {lastnamephonetic} : Display the user's last name in phonetic.
 * {alternatename} : Display the user's alternate name. If blank, it will display the user's first name instead.
 * {city} : Display the user's city.
 * {country} : Display the user's country.
@@ -325,7 +313,7 @@ Also, see Courses section below.
 
 ### Content
 
-* {global_...} : Use your own custom FilterCodes tags in the filter's settings. These are sometimes referred to as global blocks. An example of this might be if you wanted to define a standardized copyright or other text, form, email address, website URL, phone number, name, link, support information and more. Define and centrally manage up to 100 global block tags.
+* {global_...} : Use your own custom FilterCodes tags in the filter's settings. These are sometimes referred to as global blocks. An example of this might be if you wanted to define a standardized copyright or other text, email address, website URL, phone number, name, link, support information and more. Define and centrally manage up to 50 global block tags.
 * {note}content{/note} : Enables you to include a note which will not be displayed.
 * {help}content{/help} : Enables you to create popup help icons just like Moodle does.
 * {info}content{/info} : Enables you to create popup help icons just like the popup Help icons but with an "i" information icon.
@@ -380,7 +368,6 @@ Note: {if*rolename*} and {ifmin*rolename*} type tags are based on role archetype
 * {ifnotinsection}{/ifnotinsection} : Will only display the enclosed content if the user is not in a section of a course.
 * {ifingroup id|idnumber}{/ifingroup} : Will only display the content if the user is part of the specified course group ID or group ID number.
 * {ifnotingroup id|idnumber}{/ifnotingroup} : Will only display the content if the user is NOT part of the specified course group ID or group ID number.
-* {ifnotingroup}{/ifnotingroup} : Will only display the content if the user does not belong to any group at all in the course.
 * {ifingrouping id|idnumber}{/ifingrouping} : Will only display the content if the user is part of the specified course grouping ID or grouping ID number.
 * {ifnotingrouping id|idnumber}{/ifnotingrouping} : Will only display the content if the user is NOT part of the specified course grouping ID or grouping ID number.
 * {ifvisible}{/ifvisible} : Will only display the content if the course visibility is set to Show.
@@ -474,9 +461,9 @@ The {langx fr-CA}{/langx} filter will convert this into the following HTML
 
 You can define your own global tags, sometimes also called global blocks. This can only be configured by Moodle Administrators by going to **Site Administration** > **Plugins** > **Filters** > **FilterCodes**.
 
-You can create up to 100 custom global tags by specifying the tag name. The tag name will automatically be prefixed by global_. For example, if you define a tag called *copyright*, it will create a FilterCodes tag {global_*copyright*}.
+You can create up to 50 custom global tags by specifying the tag name. The tag name will automatically be prefixed by global. For example, if you define a tag called *copyright*, it will create a FilterCodes tag {global_*copyright*}.
 
-The content which you can insert is only limited by your imagination. You can include plain text content, such as one or more words, HTML source code or even a JavaScript snippet (wrap in a script tag). You can also enter almost any content using the WYSIWYG Atto or TinyMCE editor by checking the "Pretty HTML format" checkbox. This allows you to create formatted content, uploaded images and more. Note: It does not support PHP code.
+The content which you can insert is only limited by your imagination. You can include plain text content, such as one or more words, HTML source code or even a JavaScript snippet (wrap in a script tag). You can also enter almost any content using the WYSIWYG Atto editor by checking the "Pretty HTML format" checkbox. This allows you to create formatted content, uploaded images and more. Note: It does not support PHP code.
 
 Let's say you want to include a support email address in some of your courses. You could define a global tag called "global_email" and set it to "support@example.com". Then, wherever you want that email address to appear on your site, you just need to add the tag {global_email}. That way, when you decide to change the email address to "coursehelp@example.com", you need just change it here in the global custom tag settings.
 
@@ -497,8 +484,6 @@ If FilterCodes doesn't work with your theme's custom menu, contact the developer
 Alternatively, apply the Moodle core patch mentioned in https://tracker.moodle.org/browse/MDL-63219 . But remember, you will need to re-apply this after each Moodle update/upgrade. The advantage of this method is that it will add support for filters in the custom menu of most Moodle themes, not just your particular theme.
 
 Some themes may not support horizontal menu separators. Again, contact the developer/maintainer of the theme to get them to fix this or remove the -### lines.
-
-Note: Moodle does not currently support FontAwesome icons in the primary navigation menu (e.g. {fa fa-home}). They will be ignored by Moodle. This is not a limitation of FilterCodes.
 
 ### General menu
 
@@ -631,43 +616,40 @@ Note that this is a top level menu that will only be visible to Site Administrat
 
 ## Enabling FilterCodes in the Custom Menu / Primary Navigation
 
-Note: The source code in this section was last updated in May 2024 for Moodle 4.0 and last tested for compatibility up to Moodle 4.4.
+Note: The source code in this section was last updated in May 2024 for Moodle 4.0 and last tested for compatibility in Moodle 4.3 and 4.4.
 
 FilterCodes can work in custom menus but, unfortunately, only if the theme supports it or you patched Moodle. If it does not work for you, contact the theme's developer and request that they add support for Moodle filters. See the instructions included below.
 
 **Note:** In version 1.0.0 of FilterCodes, an experimental FilterCodes setting was created for the Clean and Boost themes but was only compatible and visible in Moodle 3.2 to 3.4. Unfortunately, things changed in Moodle 3.5 and it has since no longer been possible for FilterCodes to do this on its own without patching the Moodle core or the Moodle theme.
 
-There are currently four ways to enable FilterCodes in the Custom menu/Primary Navigation. You can use any one of the following:
-
-* Upgrade to Moodle LMS 5.0. As a site administrator, you need to navigate to Site Administration > Appearance > Advanced theme settings. Enable `Filter custom menu`.
-* Use the Trema theme for Moodle LMS. If you are not using Moodle 5.0 yet, you need to navigate to Site Administration > Appearance > Trema. In the General tab, Filter navigation. This provides the same functionality as in Moodle 5.0 but is compatible with Moodle 4.0 and later.
-* Patch Moodle core. See [Technique A: Patching Moodle core](#technique-a-patching-moodle-core) below.
-* Patch your theme. See [Technique B: Patching your Moodle theme](#technique-b-patching-your-moodle-theme) below.
-
-If you are still using a version of Moodle older than 4.1, we highly recommend that you upgrade your site to a supported release.
+If you are using Moodle 3.5 or later, there are two ways to make FilterCodes work in Moodle's custom menu (also called primary menu in Moodle 4.0+):
 
 ### Technique A: Patching Moodle core
 
-Moodle 5.0 does not require any patching of Moodle core. For Moodle 3.7 to 4.5, preferred method is to patch your instance of Moodle using Git. If you did not install Moodle using Git, you can still apply the changes but you will need to do so manually.
+The preferred method is to patch your instance of Moodle using Git. If you did not install Moodle using Git, you can still apply the changes but you will need to do so manually. FYI: The patches for Moodle 3.7 to 3.11 are identical.
+
+Even better, encourage Moodle HQ to enable this functionality in future releases of Moodle. For more information and to vote for this functionality, see:
+
+   https://tracker.moodle.org/browse/MDL-63219.
 
 To patch Moodle to handle this properly for most Moodle themes, cherry-pick the following patch to your Moodle site:
 
-* Moodle 3.7: https://github.com/michael-milette/moodle/tree/MDL-63219v3-M37
-* Moodle 3.8: https://github.com/michael-milette/moodle/tree/MDL-63219v3-M38
-* Moodle 3.9: https://github.com/michael-milette/moodle/tree/MDL-63219v3-M39
-* Moodle 3.10: https://github.com/michael-milette/moodle/tree/MDL-63219v3-M310
-* Moodle 3.11: https://github.com/michael-milette/moodle/tree/MDL-63219v3-M311
-* Moodle 4.0: https://github.com/michael-milette/moodle/tree/MDL-63219v3-M400
-* Moodle 4.1: https://github.com/michael-milette/moodle/tree/MDL-63219v3-M401
-* Moodle 4.2: https://github.com/michael-milette/moodle/tree/MDL-63219v3-M402
-* Moodle 4.3: https://github.com/michael-milette/moodle/tree/MDL-63219v3-M403
-* Moodle 4.4: https://github.com/michael-milette/moodle/tree/MDL-63219v3-M404
-* Moodle master: https://github.com/michael-milette/moodle/tree/MDL-63219v3-master
+* Moodle 3.7: https://github.com/michael-milette/moodle/tree/MDL-63219-M37
+* Moodle 3.8: https://github.com/michael-milette/moodle/tree/MDL-63219-M38
+* Moodle 3.9: https://github.com/michael-milette/moodle/tree/MDL-63219-M39
+* Moodle 3.10: https://github.com/michael-milette/moodle/tree/MDL-63219-M310
+* Moodle 3.11: https://github.com/michael-milette/moodle/tree/MDL-63219-M311
+* Moodle 4.0: https://github.com/michael-milette/moodle/tree/MDL-63219-M400
+* Moodle 4.1: https://github.com/michael-milette/moodle/tree/MDL-63219-M401
+* Moodle 4.2: https://github.com/michael-milette/moodle/tree/MDL-63219-M402
+* Moodle 4.3: https://github.com/michael-milette/moodle/tree/MDL-63219-M403
+* Moodle 4.4: https://github.com/michael-milette/moodle/tree/MDL-63219-M404
+* Moodle master: https://github.com/michael-milette/moodle/tree/MDL-63219-master
 
 Example: To apply the patch for Moodle using git (change the "M403" for other versions):
 
 ```bash
-    git fetch https://github.com/michael-milette/moodle MDL-63219v3-M403
+    git fetch https://github.com/michael-milette/moodle MDL-63219-M403
     git cherry-pick FETCH_HEAD
 ```
 
@@ -677,11 +659,7 @@ This is usually enough to make the filters work in the custom menu. However, we 
 
 If technique A does not work for you, you will need to integrate a few lines of code into your Moodle theme, or ask your theme's developer/maintainer to apply this change for you. Be sure to follow the correct instructions for your version of Moodle.
 
-#### For themes based on **boost** (Moodle 5.0)
-
-If you are using Moodle 5.0, you should not need patch your theme. However, some 3rd party themes bypass Moodle's API when generate their navigation menu and may not yet be compatible. Please reach out to the developer and let them know that they need to make their theme compatible with Moodle 5.0.
-
-#### For themes based on **boost** (Moodle 4.0 to 4.5)
+#### For themes based on **boost** (Moodle 4.0 and later)
 
 There is no tested patch available for all 3rd party Moodle 4.0 themes. It is recommended to use Moodle core patch above which is known to work.
 
@@ -729,7 +707,7 @@ Add this code to the core_renderer section (probably located in /theme/yourtheme
     }
 ```
 
-#### For themes based on **boost** (Moodle 3.2 to 3.11 and some 4.0+ to 4.6 themes)
+#### For themes based on **boost** (Moodle 3.2 to 3.11 and some 4.0+)
 
 Note: Supported in Moodle 3.2 to 3.11. Most Moodle 4.0 themes do not require this patch but some that were ported for 4.0+ still do.
 
@@ -816,7 +794,7 @@ Add the following code to core_renderer section (often found in /theme/yourtheme
         /**
          * Applies Moodle filters to the custom menu and custom user menu.
          *
-         * Copyright: 2017-2025 TNG Consulting Inc.
+         * Copyright: 2017-2024 TNG Consulting Inc.
          * License:   GNU GPL v3+.
          *
          * @param string $custommenuitems Current custom menu object.
@@ -971,7 +949,7 @@ Enable or disable the background pattern/image for {categorycards}. You can also
 
 ### Global custom tags
 
-Define your own custom global tags, sometimes also called global blocks. This feature enables you to create FilterCodes tags that are prefixed by **global_** . You can currently have up to 100 custom {global_...} tags.
+Define your own custom global tags, sometimes also called global blocks. This feature enables you to create FilterCodes tags that are prefixed by **global_** . You can currently have up to 50 custom {global_...} tags.
 
 ### Customizing or translating the forms generated by the {form...} tags
 
@@ -1182,9 +1160,6 @@ Create a Page on your Moodle site, preferably in a course, so that those tags wo
 * Surname [{surname}]: {surname}
 * Last name [{lastname}]: {lastname}
 * Full name [{fullname}]: {fullname}
-* First name phonetic [{firstnamephonetic}]: {firstnamephonetic}
-* Last name phonetic [{lastnamephonetic}]: {lastnamephonetic}
-* Middle name [{middlename}]: {middlename}
 * Alternate name [{alternatename}]: {alternatename}
 * City [{city}]: {city}
 * Country [{country}]: {country}
@@ -1380,7 +1355,6 @@ Create a Page on your Moodle site, preferably in a course, so that those tags wo
 * Is this Moodle Workplace? [{ifworkplace}]Yes[{/ifworkplace}]: {ifworkplace}Yes{/ifworkplace}
 * This is FilterCodes version [{filtercodes}]: {filtercodes} (It be blank if you do not have the Moodle capability to edit this tag.)
 * Are you a member of the ATEAM group [{ifingroup ATEAM}]Yes[{/ifingroup}][{ifnotingroup ATEAM}]No[{/ifnotingroup}] ? : {ifingroup ATEAM}Yes{/ifingroup}{ifnotingroup ATEAM}No{/ifnotingroup} Note: Only works in courses.
-* [{ifnotingroup}]You need to choose a group first.[{/ifnotingroup}] ? {ifnotingroup}You need to choose a group first.{/ifnotingroup}
 * Are you a member of the MCU grouping [{ifingrouping MCU}]Yes[{/ifingrouping}][{ifnotingrouping MCU}]No[{/ifnotingrouping}] ? : {ifingrouping MCU}Yes{/ifingrouping}{ifnotingrouping MCU}No{/ifnotingrouping} Note: Only works in courses.
 * [{ifvisible}]Notice: Course visibility is set to Show.[{/ifvisible}]: {ifvisible}Notice: Course visibility is set to Show.{/ifvisible}
 * [{ifnotvisible}]Warning: Course visibility is set to Hide.[{/ifnotvisible}]: {ifnotvisible}Warning: Course visibility is set to Hide.{/ifnotvisible}
@@ -1561,13 +1535,7 @@ Michael Milette - Author and Lead Developer
 
 Big thank you to the following contributors. (Please let me know if I forgot to include you in the list):
 
-* FMCorz (Frédéric Massart): Fix-323: Escape arguments used to construct link from button code (2025).
-* erucjcomp (Erick de Azevedo Lima): Fix-211: {if*rolename*} tags now work correctly (2025).
-* lucaboesch (Luca Bösch): Moodle 4.5 Plugin CI runs (2025).
-* andrewrowatt-masseyuni (Andrew Rowatt): Issue #329: Increase maximum globaltagcount to 100 (2025).
-* jaypha (Jason den Dulk): Issue #335: Refactor text_filter to construct archetypes only once (2025).
-* eimearcorrigansl: Made settings path more specific (2025).
-* golenkovm (Micha Golenkov): Fix global USER change during text filtering (2024).
+* golenkovm (Micha Golenkov): FIx global USER change during text filtering (2024).
 * 28Smiles (Leon Camus): Bug fix for {qrcode} and {urlencode} tags (2024).
 * 28Smiles (Leon Camus): New {ifingouping} tag (2024).
 * 28Smiles (Leon Camus): New {ifnotingrouping} tag (2024).
@@ -1623,7 +1591,7 @@ https://github.com/michael-milette/moodle-filter_filtercodes
 
 # License
 
-Copyright © 2017-2025 TNG Consulting Inc. - https://www.tngconsulting.ca/
+Copyright © 2017-2024 TNG Consulting Inc. - https://www.tngconsulting.ca/
 
 This file is part of FilterCodes for Moodle - https://moodle.org/
 

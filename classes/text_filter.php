@@ -18,7 +18,7 @@
  * Main filter code for FilterCodes.
  *
  * @package    filter_filtercodes
- * @copyright  2017-2025 TNG Consulting Inc. - www.tngconsulting.ca
+ * @copyright  2017-2024 TNG Consulting Inc. - www.tngconsulting.ca
  * @author     Michael Milette
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -44,12 +44,12 @@ if (class_exists('\core_filters\text_filter')) {
 /**
  * Extends the moodle_text_filter class to provide plain text support for new tags.
  *
- * @copyright  2017-2025 TNG Consulting Inc. - www.tngconsulting.ca
+ * @copyright  2017-2024 TNG Consulting Inc. - www.tngconsulting.ca
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class text_filter extends \filtercodes_base_text_filter {
-    /** @var array $archetyperoles Object array of Moodle archetypes. */
-    private static $archetyperoles = null;
+    /** @var object $archetypes Object array of Moodle archetypes. */
+    public $archetypes = [];
     /** @var array $customroles array of Roles key is shortname and value is the id */
     private static $customroles = [];
     /**
@@ -58,9 +58,6 @@ class text_filter extends \filtercodes_base_text_filter {
      */
     private static $customrolespermissions = [];
 
-    /** @var bool $infiltercodes Flag to track if a filter is being called recursively */
-    private static $infiltercodes = false;
-
     /**
      * Constructor: Get the role IDs associated with each of the archetypes.
      */
@@ -68,16 +65,13 @@ class text_filter extends \filtercodes_base_text_filter {
 
         // Note: This array must correspond to the one in function hasminarchetype.
         $archetypelist = ['manager' => 1, 'coursecreator' => 2, 'editingteacher' => 3, 'teacher' => 4, 'student' => 5];
-        if (self::$archetyperoles === null) {
-            self::$archetyperoles = [];
-            foreach ($archetypelist as $archetype => $level) {
-                $roleids = [];
-                // Build array of roles.
-                foreach (get_archetype_roles($archetype) as $role) {
-                    $roleids[] = $role->id;
-                }
-                self::$archetyperoles[$archetype] = (object)['level' => $level, 'roleids' => $roleids];
+        foreach ($archetypelist as $archetype => $level) {
+            $roleids = [];
+            // Build array of roles.
+            foreach (get_archetype_roles($archetype) as $role) {
+                $roleids[] = $role->id;
             }
+            $this->archetypes[$archetype] = (object) ['level' => $level, 'roleids' => $roleids];
         }
     }
 
@@ -104,10 +98,10 @@ class text_filter extends \filtercodes_base_text_filter {
         if (is_role_switched($PAGE->course->id)) { // Has switched roles.
             $context = \context_course::instance($PAGE->course->id);
             $id = $USER->access['rsw'][$context->path];
-            $archetypes[$archetype] = in_array($id, self::$archetyperoles[$archetype]->roleids);
+            $archetypes[$archetype] = in_array($id, $this->archetypes[$archetype]->roleids);
         } else {
             // For each of the roles associated with the archetype, check if the user has one of the roles.
-            foreach (self::$archetyperoles[$archetype]->roleids as $roleid) {
+            foreach ($this->archetypes[$archetype]->roleids as $roleid) {
                 if (user_has_role_assignment($USER->id, $roleid, $PAGE->context->id)) {
                     $archetypes[$archetype] = true;
                 }
@@ -125,7 +119,7 @@ class text_filter extends \filtercodes_base_text_filter {
      */
     private function hasonlyarchetype($archetype) {
         if ($this->hasarchetype($archetype)) {
-            $archetypes = array_keys(self::$archetyperoles);
+            $archetypes = array_keys($this->archetypes);
             foreach ($archetypes as $archetypename) {
                 if ($archetypename != $archetype && $this->hasarchetype($archetypename)) {
                     return false;
@@ -136,7 +130,7 @@ class text_filter extends \filtercodes_base_text_filter {
                 // Ignore site admin status if we have switched roles.
                 return true;
             } else {
-                return !is_siteadmin();
+                return is_siteadmin();
             }
         }
         return false;
@@ -153,7 +147,7 @@ class text_filter extends \filtercodes_base_text_filter {
         // Note: This array must start with one blank entry followed by the same list found in in __construct().
         $archetypelist = ['', 'manager', 'coursecreator', 'editingteacher', 'teacher', 'student'];
         // For each archetype level between the one specified and 'manager'.
-        for ($level = self::$archetyperoles[$minarchetype]->level; $level >= 1; $level--) {
+        for ($level = $this->archetypes[$minarchetype]->level; $level >= 1; $level--) {
             // Check to see if any of the user's roles correspond to the archetype.
             if ($this->hasarchetype($archetypelist[$level])) {
                 return true;
@@ -202,7 +196,7 @@ class text_filter extends \filtercodes_base_text_filter {
         if (!isset($list)) {
             // Not cached yet? We can take care of that.
             $list = [];
-            if ($this->isauthenticateduser()) {
+            if (isloggedin() && !isguestuser()) {
                 // We only track logged-in roles.
                 global $DB;
                 // Retrieve list of role names.
@@ -255,14 +249,9 @@ class text_filter extends \filtercodes_base_text_filter {
         global $PAGE;
 
         $sizes = ['sm' => 35, '2' => 35, 'md' => 100, '1' => 100, 'lg' => 512, '3' => 512];
-        if (isset($sizes[$size])) {
-            $px = $sizes[$size];
-        } else if (is_numeric($size)) {
+        if (empty($px = $sizes[$size])) {
             $px = $size; // Size was specified in pixels.
-        } else {
-            $px = 100; // Default size.
         }
-
         $userpicture = new \user_picture($user);
         $userpicture->size = $px; // Size in pixels.
         $url = $userpicture->get_url($PAGE);
@@ -340,42 +329,6 @@ class text_filter extends \filtercodes_base_text_filter {
             WHERE g.courseid = ? AND u.id = ?
             GROUP BY gp.id
             ORDER BY gp.name ASC', [$courseid, $userid]);
-    }
-
-    /**
-     * Generates an ordered list of course modules as cards.
-     *
-     * @return string HTML ordered list of course modules as cards.
-     */
-    private function list_course_modules() {
-    	global $COURSE;
-
-    	if (!isset($COURSE->id)) {
-        	return '';
-    	}
-
-    	$courseid = $COURSE->id;
-    	$modinfo = get_fast_modinfo($courseid);
-    	$sections = $modinfo->get_section_info_all();
-
-    	// Remove section 0 from the list to start with and skip the last section
-    	unset($sections[0]);
-    	array_pop($sections); // Removes the last element from the array
-
-    	$html = '<ol class="olcards">';
-    	foreach ($sections as $section) {
-            if ($section->uservisible && $section->name) {
-            	$color = $section->section % 2 == 0 ? '#037b90' : '#ff7f40'; // Alternate color based on section number
-            	$url = new \moodle_url('/course/view.php', ['id' => $courseid, 'section' => $section->section]);
-            	$html .= "<li style=\"--cardColor:{$color}\">";
-            	$html .= '<div class="content">';
-            	$html .= '<a style="color:black; text-decoration: none" href="' . $url . '">';
-            	$html .= '<div class="title">' . format_string($section->name) . '</div>';
-            	$html .= '</a></div></li>';
-            }
-    	}
-    	$html .= '</ol>';
-    	return $html;
     }
 
     /**
@@ -576,8 +529,6 @@ class text_filter extends \filtercodes_base_text_filter {
             $dimmed = '';
         }
 
-        $category->name = format_string($category->name);
-
         $url = (new \moodle_url('/course/index.php', ['categoryid' => $category->id]))->out();
         if ($categoryshowpic) {
             $imgurl = $OUTPUT->get_generated_image_for_id($category->id + 65535);
@@ -595,21 +546,6 @@ class text_filter extends \filtercodes_base_text_filter {
         }
         $html .= '</a></li>' . PHP_EOL;
         return $html;
-    }
-
-    /**
-     * Check if the current user is authenticated and not a guest user.
-     *
-     * @return bool True if the user is logged in and not a guest user, false otherwise.
-     */
-    private function isauthenticateduser() {
-        static $isauthenticateduser;
-
-        if (!isset($isauthenticateduser)) {
-            $isauthenticateduser = isloggedin() && !isguestuser();
-        }
-
-        return $isauthenticateduser;
     }
 
     /**
@@ -680,9 +616,9 @@ class text_filter extends \filtercodes_base_text_filter {
                 case 'horizontal':
                     global $DB;
                     $category = $DB->get_record('course_categories', ['id' => $course->category]);
-                    $category = format_string($category->name);
+                    $category = $category->name;
 
-                    $summary = $course->summary == null ? '' : format_string($course->summary, true, ['context' => $context]);
+                    $summary = $course->summary == null ? '' : $course->summary;
                     $summary = substr($summary, -4) == '<br>' ? substr($summary, 0, strlen($summary) - 4) : $summary;
 
                     $content .= '
@@ -718,9 +654,9 @@ class text_filter extends \filtercodes_base_text_filter {
                 case 'table':
                     global $DB;
                     $category = $DB->get_record('course_categories', ['id' => $course->category]);
-                    $category = format_string($category->name);
+                    $category = $category->name;
 
-                    $summary = $course->summary == null ? '' : format_string($course->summary, true, ['context' => $context]);
+                    $summary = $course->summary == null ? '' : $course->summary;
                     $summary = substr($summary, -4) == '<br>' ? substr($summary, 0, strlen($summary) - 4) : $summary;
 
                     $content .= '
@@ -871,21 +807,6 @@ class text_filter extends \filtercodes_base_text_filter {
         return $progresspercent;
     }
 
-
-    /**
-     * Format a custom menu item text
-     *
-     * This function ensures that text used in custom menu items is properly formatted,
-     * specifically by replacing pipe characters (|) with HTML entity representation
-     * to prevent them from being interpreted as menu separators.
-     *
-     * @param string $text The menu item text to be formatted
-     * @return string The formatted menu item text with pipes replaced with HTML entities
-     */
-    private function format_custommenuitem($text): string {
-        return str_replace('|', '&#124;', format_string($text));
-    }
-
     /**
      * Generator Tags
      *
@@ -908,7 +829,7 @@ class text_filter extends \filtercodes_base_text_filter {
                 $theme = $PAGE->theme->name;
                 $menu = '';
                 if ($this->hasminarchetype('editingteacher')) {
-                    $menu .= '{getstring}admin{/getstring}' . PHP_EOL;
+                    $menu .= '{fa fa-wrench} {getstring}admin{/getstring}' . PHP_EOL;
                 }
                 if ($this->hasminarchetype('coursecreator')) { // If a course creator or above.
                     $menu .= '-{getstring}administrationsite{/getstring}|/admin/search.php' . PHP_EOL;
@@ -918,15 +839,11 @@ class text_filter extends \filtercodes_base_text_filter {
                 }
                 if ($this->hasminarchetype('manager')) { // If a manager or above.
                     $menu .= '-{getstring}user{/getstring}: {getstring:admin}usermanagement{/getstring}|/admin/user.php' . PHP_EOL;
-                    $menu .= '-{getstring}user{/getstring}: {getstring}addnewuser{/getstring}'
-                        . '|/user/editadvanced.php?id=-1' . PHP_EOL;
-                    $menu .= '-{getstring}user{/getstring}: {getstring:tool_uploaduser}uploadusers{/getstring}'
-                        . '|/admin/tool/uploaduser/index.php' . PHP_EOL;
-                    if (is_siteadmin() && !is_role_switched($PAGE->course->id)) {
-                        $menu .= '-{getstring}user{/getstring}: {getstring:mnet}profilefields{/getstring}|/user/profile/index.php' .
+                    $menu .= '{ifminsitemanager}' . PHP_EOL;
+                    $menu .= '-{getstring}user{/getstring}: {getstring:mnet}profilefields{/getstring}|/user/profile/index.php' .
                             PHP_EOL;
-                    }
                     $menu .= '-###' . PHP_EOL;
+                    $menu .= '{/ifminsitemanager}' . PHP_EOL;
                     $menu .= '-{getstring}course{/getstring}: {getstring:admin}coursemgmt{/getstring}|/course/management.php' .
                             '?categoryid={categoryid}' . PHP_EOL;
                     $menu .= '-{getstring}course{/getstring}: {getstring}new{/getstring}|/course/edit.php' .
@@ -1114,7 +1031,7 @@ class text_filter extends \filtercodes_base_text_filter {
             // Allow Theme Changes on URL must be enabled for this to have any effect.
             if (stripos($text, '{menuthemes}') !== false) {
                 $menu = '';
-                if (empty($_POST) && is_siteadmin() && !is_role_switched($PAGE->course->id)) { // If a site administrator.
+                if (is_siteadmin() && empty($_POST)) { // If a site administrator.
                     if (get_config('core', 'allowthemechangeonurl')) {
                         $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http")
                             . "://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
@@ -1126,32 +1043,34 @@ class text_filter extends \filtercodes_base_text_filter {
                             $menu .= '-' . $themename . '|' . $url . 'theme=' . $theme . PHP_EOL;
                         }
 
-                        // Add links to Advanced Theme Settings and to Current theme settings.
-                        $theme = $PAGE->theme->name;
-                        $menu = 'Themes' . PHP_EOL . $menu;
-                        if ($CFG->branch >= 404) {
-                            $label = 'themesettingsadvanced';
-                            $section = 'themesettingsadvanced';
-                        } else {
-                            $label = 'themesettings';
-                            $section = 'themesettings';
-                        }
+                        // If an administrator, add links to Advanced Theme Settings and to Current theme settings.
+                        if (is_siteadmin() && !is_role_switched($PAGE->course->id)) {
+                            $theme = $PAGE->theme->name;
+                            $menu = 'Themes' . PHP_EOL . $menu;
+                            if ($CFG->branch >= 404) {
+                                $label = 'themesettingsadvanced';
+                                $section = 'themesettingsadvanced';
+                            } else {
+                                $label = 'themesettings';
+                                $section = 'themesettings';
+                            }
 
-                        $menu .= '-###' . PHP_EOL;
-                        $menu .= '-{getstring:admin}' . $label . '{/getstring}|/admin/settings.php' .
-                            '?section=' . $section . '|Including custom menus, designer mode, theme in URL' . PHP_EOL;
+                            $menu .= '-###' . PHP_EOL;
+                            $menu .= '-{getstring:admin}' . $label . '{/getstring}|/admin/settings.php' .
+                                '?section=' . $section . '|Including custom menus, designer mode, theme in URL' . PHP_EOL;
 
-                        if (!file_exists($CFG->dirroot . '/mod/hvp/version.php')) { // Not compatible with mod_hvp.
-                            if (file_exists($CFG->dirroot . '/theme/' . $theme . '/settings.php')) {
-                                require_once($CFG->libdir . '/adminlib.php');
-                                if (admin_get_root()->locate('theme_' . $theme)) {
-                                    // Settings use categories interface URL.
-                                    $url = '/admin/category.php?category=theme_' . $theme . PHP_EOL;
-                                } else {
-                                    // Settings use tabs interface URL.
-                                    $url = '/admin/settings.php?section=themesetting' . $theme . PHP_EOL;
+                            if (!file_exists($CFG->dirroot . '/mod/hvp/version.php')) { // Not compatible with mod_hvp.
+                                if (file_exists($CFG->dirroot . '/theme/' . $theme . '/settings.php')) {
+                                    require_once($CFG->libdir . '/adminlib.php');
+                                    if (admin_get_root()->locate('theme_' . $theme)) {
+                                        // Settings use categories interface URL.
+                                        $url = '/admin/category.php?category=theme_' . $theme . PHP_EOL;
+                                    } else {
+                                        // Settings use tabs interface URL.
+                                        $url = '/admin/settings.php?section=themesetting' . $theme . PHP_EOL;
+                                    }
+                                    $menu .= '-{getstring:admin}currenttheme{/getstring}|' . $url;
                                 }
-                                $menu .= '-{getstring:admin}currenttheme{/getstring}|' . $url;
                             }
                         }
                     }
@@ -1174,7 +1093,7 @@ class text_filter extends \filtercodes_base_text_filter {
                     if (count($availablelanguages) > 1) {
                         foreach ($availablelanguages as $langcode => $langname) {
                             // Create a link for each language.
-                            $menu .= '-' . $this->format_custommenuitem($langname) . '|' . $url . 'lang=' . $langcode . PHP_EOL;
+                            $menu .= '-' . $langname . '|' . $url . 'lang=' . $langcode . PHP_EOL;
                         }
                         if (!empty($menu)) {
                             $menu = get_string('language') . '||' . get_string('languageselector') . PHP_EOL . $menu;
@@ -1209,7 +1128,7 @@ class text_filter extends \filtercodes_base_text_filter {
                         $course = $DB->get_record('course', ['id' => $courseid]);
                         if ($course) {
                             $courseurl = (new \moodle_url('/course/view.php', ['id' => $course->id]))->out();
-                            $menu .= '-' . $this->format_custommenuitem($course->fullname) . '|' . $courseurl . "\n";
+                            $menu .= '-' . format_string($course->fullname) . '|' . $courseurl . "\n";
                         }
                     }
                     if (!empty($menu)) {
@@ -1230,7 +1149,7 @@ class text_filter extends \filtercodes_base_text_filter {
                             $menu .= "\n-###\n";
                         }
                         $action = in_array($PAGE->course->id, $wishlist) ? 'remove' : 'add';
-                        $url = (new \moodle_url('/filter/filtercodes/action.php', [
+                        $url = (new \moodle_url('/filter/filtercodes/wishlist.php', [
                             'courseid' => $PAGE->course->id,
                             'action' => $action,
                         ]))->out();
@@ -1261,8 +1180,7 @@ class text_filter extends \filtercodes_base_text_filter {
                         $coursecontext->id,
                         'course',
                         'section',
-                        0
-                    );
+                        0);
                     $replace['/\{coursesummary\}/i'] = format_text(
                         $summary,
                         FORMAT_HTML,
@@ -1307,7 +1225,7 @@ class text_filter extends \filtercodes_base_text_filter {
             // These require that you already be logged-in.
             foreach (['formquickquestion', 'formcheckin'] as $form) {
                 if (stripos($text, '{' . $form . '}') !== false) {
-                    if ($this->isauthenticateduser()) {
+                    if (isloggedin() && !isguestuser()) {
                         $formcode = get_string($form, 'filter_filtercodes');
                         $replace['/\{' . $form . '\}/i'] = $pre . $form . '">' . get_string($form, 'filter_filtercodes') . $post;
                     } else {
@@ -1345,7 +1263,6 @@ class text_filter extends \filtercodes_base_text_filter {
                 if (!empty($tag) && stripos($text, '{global_' . $tag . '}') !== false) {
                     // Replace the tag with new content.
                     $content = get_config('filter_filtercodes', 'globalcontent' . $i);
-                    $content = format_text($content, FORMAT_HTML, ['noclean' => true, 'para' => false, 'newlines' => false]);
                     $replace['/\{global_' . $tag . '\}/i'] = $content;
                 }
             }
@@ -1645,6 +1562,37 @@ class text_filter extends \filtercodes_base_text_filter {
         return $moretags;
     }
 
+    private function list_course_modules() {
+    	global $COURSE;
+
+    	if (!isset($COURSE->id)) {
+        	return '';
+    	}
+
+    	$courseid = $COURSE->id;
+    	$modinfo = get_fast_modinfo($courseid);
+    	$sections = $modinfo->get_section_info_all();
+
+    	// Remove section 0 from the list to start with and skip the last section
+    	unset($sections[0]);
+    	array_pop($sections); // Removes the last element from the array
+
+    	$html = '<ol class="olcards">';
+    	foreach ($sections as $section) {
+            if ($section->uservisible && $section->name) {
+            	$color = $section->section % 2 == 0 ? '#037b90' : '#ff7f40'; // Alternate color based on section number
+            	$url = new \moodle_url('/course/view.php', ['id' => $courseid, 'section' => $section->section]);
+            	$html .= "<li style=\"--cardColor:{$color}\">";
+            	$html .= '<div class="content">';
+            	$html .= '<a style="color:black; text-decoration: none" href="' . $url . '">';
+            	$html .= '<div class="title">' . format_string($section->name) . '</div>';
+            	$html .= '</a></div></li>';
+            }
+    	}
+    	$html .= '</ol>';
+    	return $html;
+    }
+
     /**
      * Main filter function called by Moodle.
      *
@@ -1655,7 +1603,7 @@ class text_filter extends \filtercodes_base_text_filter {
     public function filter($text, array $options = []) {
         global $CFG, $SITE, $PAGE, $USER, $DB;
 
-        if (strpos($text, '{') === false && strpos($text, '%7B') === false || self::$infiltercodes) {
+        if (strpos($text, '{') === false && strpos($text, '%7B') === false) {
             return $text;
         }
 
@@ -1670,7 +1618,6 @@ class text_filter extends \filtercodes_base_text_filter {
 
         // Handle escaped tags to be ignored. Remove them so they don't get processed if the option to [{escape braces}] is enabled.
         $text = $this->escapedtags($text);
-        self::$infiltercodes = true; // Prevent recursive calls to this function.
 
         // START: Process tags that may end up containing other tags first.
 
@@ -1703,7 +1650,7 @@ class text_filter extends \filtercodes_base_text_filter {
         // Description: First 2-letters, in lowercase, of the user's preferred language as set in their profile.
         // Parameters: None.
         if (stripos($text, '{preferredlanguage}') !== false) {
-            if ($this->isauthenticateduser()) {
+            if (isloggedin() && !isguestuser()) {
                 // If user does not have a preferred language, default to the system default language.
                 $preflang = empty($USER->lang) ? $CFG->lang : $USER->lang;
                 if ($preflang == 'en') {
@@ -1831,9 +1778,10 @@ class text_filter extends \filtercodes_base_text_filter {
             if (stripos($text, '{courseshortname}') !== false) {
                 $course = $PAGE->course;
                 if ($course->id == $SITE->id) { // Front page - use site name.
-                    $replace['/\{courseshortname\}/i'] = $SITE->shortname;
+                    $replace['/\{courseshortname\}/i'] = format_string($SITE->shortname);
                 } else { // In a course - use course full name.
-                    $replace['/\{courseshortname\}/i'] = $course->shortname;
+                    $coursecontext = \context_course::instance($course->id);
+                    $replace['/\{courseshortname\}/i'] = format_string($course->shortname, true, ['context' => $coursecontext]);
                 }
             }
         }
@@ -1992,7 +1940,7 @@ class text_filter extends \filtercodes_base_text_filter {
             $course = $PAGE->course;
             $coursecontext = \context_course::instance($course->id);
             $replace['/\{courseunenrolurl\}/i'] = '';
-            if ($course->id != SITEID && $this->isauthenticateduser() && is_enrolled($coursecontext)) {
+            if ($course->id != SITEID && isloggedin() && !isguestuser() && is_enrolled($coursecontext)) {
                 $plugins   = enrol_get_plugins(true);
                 $instances = enrol_get_instances($course->id, true);
                 foreach ($instances as $instance) {
@@ -2077,7 +2025,7 @@ class text_filter extends \filtercodes_base_text_filter {
         // Description: Date that the user first accessed the site.
         // Optional parameters: dateTimeFormat - either one of Moodle's built-in data/time formats or php's strftime.
         if (stripos($text, '{firstaccessdate') !== false) {
-            if ($this->isauthenticateduser() && !empty($USER->firstaccess)) {
+            if (isloggedin() && !isguestuser() && !empty($USER->firstaccess)) {
                 // Replace {firstaccessdate} tag with formatted date.
                 if (stripos($text, '{firstaccessdate}') !== false) {
                     $replace['/\{firstaccessdate\}/i'] = userdate($USER->firstaccess, get_string('strftimedatefullshort'));
@@ -2109,7 +2057,7 @@ class text_filter extends \filtercodes_base_text_filter {
         // Description: Date that the user last logged in to the site.
         // Optional parameters: dateTimeFormat - either one of Moodle's built-in data/time formats or php's strftime.
         if (stripos($text, '{lastlogin') !== false) {
-            if ($this->isauthenticateduser() && !empty($USER->lastlogin)) {
+            if (isloggedin() && !isguestuser() && !empty($USER->lastlogin)) {
                 // Replace {lastlogin} tag with formatted date.
                 if (stripos($text, '{lastlogin}') !== false) {
                     $replace['/\{lastlogin\}/i'] = userdate($USER->lastlogin, get_string('strftimedatetimeshort'));
@@ -2452,7 +2400,6 @@ class text_filter extends \filtercodes_base_text_filter {
         if ($this->replacetags($text, $replace) == false) {
             // No more tags? Put back the escaped tags, if any, and return the string.
             $text = $this->escapedtags($text);
-            self::$infiltercodes = false;
             return $text;
         }
 
@@ -2504,19 +2451,10 @@ class text_filter extends \filtercodes_base_text_filter {
         // Parameters: None.
         if (stripos($text, '{alternatename}') !== false) {
             // If alternate name is empty, use firstname instead.
-            if ($this->isauthenticateduser() && (!is_null($USER->alternatename) && !empty(trim($USER->alternatename)))) {
+            if (isloggedin() && !isguestuser() && (!is_null($USER->alternatename) && !empty(trim($USER->alternatename)))) {
                 $replace['/\{alternatename\}/i'] = $USER->alternatename;
             } else {
                 $replace['/\{alternatename\}/i'] = $u->firstname;
-            }
-        }
-
-        // Tags: {firstnamephonetic}, {lastnamephonetic}, {middlename}.
-        // Description: User's first name phonetic, last name phonetic and middle name as set in their profile.
-        // Parameters: None.
-        foreach (['firstnamephonetic', 'lastnamephonetic', 'middlename'] as $field) {
-            if (stripos($text, '{' . $field . '}') !== false) {
-                $replace['/\{' . $field . '\}/i'] = $this->isauthenticateduser() ? trim($USER->{$field}) : '';
             }
         }
 
@@ -2524,21 +2462,21 @@ class text_filter extends \filtercodes_base_text_filter {
         // Description: User's email address as set in their profile.
         // Parameters: None.
         if (stripos($text, '{email}') !== false) {
-            $replace['/\{email\}/i'] = $this->isauthenticateduser() ? $USER->email : '';
+            $replace['/\{email\}/i'] = isloggedin() && !isguestuser() ? $USER->email : '';
         }
 
         // Tag: {city}.
         // Description: User's city as set in their profile.
         // Parameters: None.
         if (stripos($text, '{city}') !== false) {
-            $replace['/\{city\}/i'] = $this->isauthenticateduser() ? $USER->city : '';
+            $replace['/\{city\}/i'] = isloggedin() && !isguestuser() ? $USER->city : '';
         }
 
         // Tag: {country}.
         // Description: User's country as set in their profile.
         // Parameters: None.
         if (stripos($text, '{country}') !== false) {
-            if ($this->isauthenticateduser() && !empty($USER->country)) {
+            if (isloggedin() && !isguestuser() && !empty($USER->country)) {
                 $replace['/\{country\}/i'] = get_string($USER->country, 'countries');
             } else {
                 $replace['/\{country\}/i'] = '';
@@ -2548,7 +2486,7 @@ class text_filter extends \filtercodes_base_text_filter {
         // Description: User's time zone as set in their profile.
         // Parameters: None.
         if (stripos($text, '{timezone}') !== false) {
-            if ($this->isauthenticateduser() && !empty($USER->timezone)) {
+            if (isloggedin() && !isguestuser() && !empty($USER->timezone)) {
                 if ($USER->timezone == '99') { // Default is system timezone.
                     $replace['/\{timezone\}/i'] = \core_date::get_default_php_timezone();
                 } else {
@@ -2561,21 +2499,21 @@ class text_filter extends \filtercodes_base_text_filter {
         // Description: User's institution as set in their profile.
         // Parameters: None.
         if (stripos($text, '{institution}') !== false) {
-            $replace['/\{institution\}/i'] = $this->isauthenticateduser() ? $USER->institution : '';
+            $replace['/\{institution\}/i'] = isloggedin() && !isguestuser() ? $USER->institution : '';
         }
 
         // Tag: {department}.
         // Description: User's department as set in their profile.
         // Parameters: None.
         if (stripos($text, '{department}') !== false) {
-            $replace['/\{department\}/i'] = $this->isauthenticateduser() ? $USER->department : '';
+            $replace['/\{department\}/i'] = isloggedin() && !isguestuser() ? $USER->department : '';
         }
 
         // Tag: {idnumber}.
         // Description: idnumber as specified in the user's profile.
         // Parameters: None.
         if (stripos($text, '{idnumber}') !== false) {
-            $replace['/\{idnumber\}/i'] = $this->isauthenticateduser() ? $USER->idnumber : '';
+            $replace['/\{idnumber\}/i'] = isloggedin() && !isguestuser() ? $USER->idnumber : '';
         }
 
         // Tag: {webpage}
@@ -2585,7 +2523,7 @@ class text_filter extends \filtercodes_base_text_filter {
             if ($CFG->branch >= 311) {
                 $text = str_replace('{webpage}', '{profile_field_webpage}', $text);
             } else {
-                $replace['/\{webpage\}/i'] = $this->isauthenticateduser() ? $USER->url : '';
+                $replace['/\{webpage\}/i'] = isloggedin() && !isguestuser() ? $USER->url : '';
             }
         }
 
@@ -2652,7 +2590,7 @@ class text_filter extends \filtercodes_base_text_filter {
             // Tag: {sitename}.
             // Description: The full name of the site name.
             // Parameters: None.
-            if (stripos($text, '{sitename}') !== false) {
+            if (stripos($text, '{sitename') !== false) {
                 $sitecontext = \context_system::instance();
                 $replace['/\{sitename\}/i'] = format_string($SITE->fullname, true, ['context' => $sitecontext]);
             }
@@ -2661,8 +2599,7 @@ class text_filter extends \filtercodes_base_text_filter {
             // Description: Site summary as defined in the Front Page/Site Home Settings.
             // Parameters: None.
             if (stripos($text, '{sitesummary}') !== false) {
-                $sitecontext = \context_system::instance();
-                $replace['/\{sitesummary\}/i'] = format_string($SITE->summary, true, ['context' => $sitecontext]);
+                $replace['/\{sitesummary\}/i'] = $SITE->fullname;
             }
 
             // Tag: {siteyear}.
@@ -2689,7 +2626,6 @@ class text_filter extends \filtercodes_base_text_filter {
         if ($this->replacetags($text, $replace) == false) {
             // No more tags? Put back the escaped tags, if any, and return the string.
             $text = $this->escapedtags($text);
-            self::$infiltercodes = false;
             return $text;
         }
 
@@ -2698,7 +2634,7 @@ class text_filter extends \filtercodes_base_text_filter {
             // Description: Contents of the custom user profile field. Will apply formating to datetime and checkbox type fields.
             // Required Parameters: shortname of a custom profile field.
             if (stripos($text, '{profile_field') !== false) {
-                $isuser = ($this->isauthenticateduser());
+                $isuser = (isloggedin() && !isguestuser());
                 // Cached the defined custom profile fields and data.
                 if (!isset($profilefields)) {
                     $profilefields = $DB->get_records('user_info_field', null, '', 'id, datatype, shortname, visible, param3');
@@ -2738,7 +2674,7 @@ class text_filter extends \filtercodes_base_text_filter {
             // Parameters: None.
             if (stripos($text, '{profilefullname}') !== false) {
                 $fullname = '';
-                if ($this->isauthenticateduser()) {
+                if (isloggedin() && !isguestuser()) {
                     $fullname = get_string('fullnamedisplay', null, $USER);
                     if ($PAGE->pagelayout == 'mypublic' && $PAGE->pagetype == 'user-profile') {
                         $userid = optional_param('userid', optional_param(
@@ -2823,8 +2759,7 @@ class text_filter extends \filtercodes_base_text_filter {
                         '/\{userpictureimg\s+(\w+)\}/isuU',
                         function ($matches) use ($USER) {
                             $url = $this->getprofilepictureurl($USER, $matches[1]);
-                            $fullname = get_string('fullnamedisplay', null, $USER);
-                            $tag = '<img src="' . $url . '" alt="' . $fullname . '" class="userpicture">';
+                            $tag = '<img src="' . $url . '" alt="' . $USER->fullname . '" class="userpicture">';
                             return $tag;
                         },
                         $text
@@ -2839,7 +2774,7 @@ class text_filter extends \filtercodes_base_text_filter {
             // Description: Description as set in user's profile.
             // Parameters: None.
             if (stripos($text, '{userdescription}') !== false) {
-                if ($this->isauthenticateduser()) {
+                if (isloggedin() && !isguestuser()) {
                     $user = $DB->get_record('user', ['id' => $USER->id], 'description', MUST_EXIST);
                     $replace['/\{userdescription\}/i'] = format_text($user->description, $USER->descriptionformat);
                     unset($user);
@@ -3379,6 +3314,7 @@ class text_filter extends \filtercodes_base_text_filter {
                     if (stripos($text, '{courserequestmenu}') !== false) {
                         // Not top level menu.
                         $link = '-###' . PHP_EOL;
+                        $link .= '-' . get_string('requestcourse') . '|' . (new \moodle_url('/course/request.php'))->out();
                         $replace['/\{courserequestmenu\}/i'] = $link;
                     }
                 } else {
@@ -3387,15 +3323,15 @@ class text_filter extends \filtercodes_base_text_filter {
             }
         }
 
-        // Check for [listmodules] and replace it
-        if (strpos($text, '[listmodules]') !== false) {
-            $module_list = $this->list_course_modules();
-            $text = str_replace('[listmodules]', $module_list, $text);
-        } 
+	// Check for [listmodules] and replace it
+    if (strpos($text, '[listmodules]') !== false) {
+        $module_list = $this->list_course_modules();
+        $text = str_replace('[listmodules]', $module_list, $text);
+    }
 
         // These tags: {mycourses} and {mycoursesmenu} and {mycoursescards}.
         if (stripos($text, '{mycourse') !== false || stripos($text, '{myccourse') !== false) {
-            if ($this->isauthenticateduser()) {
+            if (isloggedin() && !isguestuser()) {
                 // Retrieve list of user's enrolled courses.
                 $sortorder = 'visible DESC';
                 // Prevent undefined $CFG->navsortmycoursessort errors.
@@ -3441,7 +3377,7 @@ class text_filter extends \filtercodes_base_text_filter {
                     $list = '';
                     foreach ($mycourses as $mycourse) {
                         $list .= '<li><a href="' . (new \moodle_url('/course/view.php', ['id' => $mycourse->id]))->out() . '">' .
-                            format_string($mycourse->fullname) . '</a></li>';
+                                $mycourse->fullname . '</a></li>';
                     }
                     $replace['/\{mycourses\}/i'] = '<ul>' . (empty($list) ? "<li>$emptylist</li>" : $list) . '</ul>';
                     unset($list);
@@ -3452,9 +3388,9 @@ class text_filter extends \filtercodes_base_text_filter {
                 // Parameters: None.
                 if (stripos($text, '{myccourses}') !== false) {
                     $list = '';
-                    foreach ($myccourses as $mycourse) {
-                        $list .= '<li><a href="' . (new \moodle_url('/course/view.php', ['id' => $mycourse->id]))->out() . '">' .
-                            format_string($mycourse->fullname) . '</a></li>';
+                    foreach ($myccourses as $myccourse) {
+                        $list .= '<li><a href="' . (new \moodle_url('/course/view.php', ['id' => $myccourse->id]))->out() . '">' .
+                                $myccourse->fullname . '</a></li>';
                     }
                     $replace['/\{myccourses\}/i'] = '<ul>' . (empty($list) ? "<li>$emptycclist</li>" : $list) . '</ul>';
                     unset($list);
@@ -3466,7 +3402,7 @@ class text_filter extends \filtercodes_base_text_filter {
                 if (stripos($text, '{mycoursesmenu}') !== false) {
                     $list = '';
                     foreach ($mycourses as $mycourse) {
-                        $list .= '-' . $this->format_custommenuitem($mycourse->fullname) . '|' .
+                        $list .= '-' . $mycourse->fullname . '|' .
                             (new \moodle_url('/course/view.php', ['id' => $mycourse->id]))->out() . PHP_EOL;
                     }
                     $replace['/\{mycoursesmenu\}/i'] = '-' . (empty($list) ? $emptylist : $list);
@@ -3586,7 +3522,7 @@ class text_filter extends \filtercodes_base_text_filter {
             if (stripos($text, '{categoryname}') !== false) {
                 if (!empty($catid)) {
                     // If category is not 0, get category name.
-                    $replace['/\{categoryname\}/i'] = format_string($category->name);
+                    $replace['/\{categoryname\}/i'] = $category->name;
                 } else {
                     // Otherwise, category has no name.
                     $replace['/\{categoryname\}/i'] = '';
@@ -3664,7 +3600,7 @@ class text_filter extends \filtercodes_base_text_filter {
                 }
                 $list = '';
                 foreach ($categories as $id => $name) {
-                    $list .= '-' . $this->format_custommenuitem($name) . '|/course/index.php?categoryid=' . $id . PHP_EOL;
+                    $list .= '-' . $name . '|/course/index.php?categoryid=' . $id . PHP_EOL;
                 }
                 $replace['/\{categoriesmenu\}/i'] = $list;
                 unset($tag);
@@ -3693,9 +3629,10 @@ class text_filter extends \filtercodes_base_text_filter {
                         continue;
                     }
                     $dimmed = $category->visible ? '' : ' class="dimmed"';
-                    $link = new \moodle_url('/course/index.php', ['categoryid' => $category->id]);
-                    $link = $link->out();
-                    $list .= '<li' . $dimmed . '><a href="' . $link . '">' . format_string($category->name) . '</a></li>' . PHP_EOL;
+                    $list .= '<li' . $dimmed . '><a href="' . (new \moodle_url(
+                        '/course/index.php',
+                        ['categoryid' => $category->id]))->out()
+                        . '">' . $category->name . '</a></li>' . PHP_EOL;
                 }
                 $list = !empty($list) ? '<ul>' . $list . '</ul>' : '';
                 $categories->close();
@@ -3724,8 +3661,7 @@ class text_filter extends \filtercodes_base_text_filter {
                         // Skip if the category is not visible to the user.
                         continue;
                     }
-                    $list .= '-' . $this->format_custommenuitem($category->name)
-                         . '|/course/index.php?categoryid=' . $category->id . PHP_EOL;
+                    $list .= '-' . $category->name . '|/course/index.php?categoryid=' . $category->id . PHP_EOL;
                 }
                 $categories->close();
                 $replace['/\{categories0menu\}/i'] = $list;
@@ -3744,7 +3680,7 @@ class text_filter extends \filtercodes_base_text_filter {
                 $categories = $DB->get_recordset_sql($sql, ['contextcoursecat' => CONTEXT_COURSECAT]);
                 foreach ($categories as $category) {
                     $list .= '<li><a href="' . (new \moodle_url('/course/index.php', ['categoryid' => $category->id]))->out() . '">'
-                            . format_string($category->name) . '</a></li>' . PHP_EOL;
+                            . $category->name . '</a></li>' . PHP_EOL;
                 }
                 $list = !empty($list) ? '<ul>' . $list . '</ul>' : '';
                 $categories->close();
@@ -3763,8 +3699,7 @@ class text_filter extends \filtercodes_base_text_filter {
                 $list = '';
                 $categories = $DB->get_recordset_sql($sql, ['contextcoursecat' => CONTEXT_COURSECAT]);
                 foreach ($categories as $category) {
-                    $list .= '-' . $this->format_custommenuitem($category->name)
-                        . '|/course/index.php?categoryid=' . $category->id . PHP_EOL;
+                    $list .= '-' . $category->name . '|/course/index.php?categoryid=' . $category->id . PHP_EOL;
                 }
                 $categories->close();
                 $replace['/\{categoriesxmenu\}/i'] = $list;
@@ -3891,7 +3826,7 @@ class text_filter extends \filtercodes_base_text_filter {
         }
 
         // Tag: {sectionname}.
-        // Description: The name of the section in which the current activity is located. Blank if not in course or on course page.
+        // Description: The name of the section in which the current activity is located. Blank if not in a course.
         // Parameters: None.
         if (stripos($text, '{sectionname}') !== false) {
             // If in a course and section name.
@@ -3913,7 +3848,7 @@ class text_filter extends \filtercodes_base_text_filter {
         // Description: For use in forms to make a field read-only when user is logged-in as non-guest.
         // Parameters: None.
         if (stripos($text, '{readonly}') !== false) {
-            if ($this->isauthenticateduser()) {
+            if (isloggedin() && !isguestuser()) {
                 $replace['/\{readonly\}/i'] = 'readonly="readonly"';
             } else {
                 $replace['/\{readonly\}/i'] = '';
@@ -4084,8 +4019,8 @@ class text_filter extends \filtercodes_base_text_filter {
                             if (($cm = \get_coursemodule_from_id('', $cmid, 0)) !== false) {
                                 // Get the completion data for this activity if it exists.
                                 try {
-                                    $data = $completion->get_data($cm, false, $USER->id);
-                                    $iscompleted = ($data->completionstate > COMPLETION_INCOMPLETE); // A completed state.
+                                    $data = $completion->get_data($cm, true, $USER->id);
+                                    $iscompleted = ($data->completionstate == COMPLETION_COMPLETE);
                                 } catch (\moodle_exception $e) {
                                     // Handle Moodle-specific exceptions.
                                     unset($e);
@@ -4129,15 +4064,15 @@ class text_filter extends \filtercodes_base_text_filter {
 
                             // Only process valid IDs.
                             if (($cm = \get_coursemodule_from_id('', $cmid, 0)) !== false) {
-                                // Get the completion data for this activity if it exists.
+                                // Get the completion data for this activity.
                                 try {
-                                    $data = $completion->get_data($cm, false, $USER->id);
-                                    $iscompleted = ($data->completionstate > COMPLETION_INCOMPLETE); // A completed state.
+                                    $data = $completion->get_data($cm, true, $USER->id);
+                                    $iscompleted = ($data->completionstate == COMPLETION_COMPLETE);
                                 } catch (\moodle_exception $e) {
                                     // Handle Moodle-specific exceptions.
                                     unset($e);
                                     continue;
-                                } catch (\Exception $e) {
+                                } catch (Exception $e) {
                                     unset($e);
                                     continue;
                                 }
@@ -4162,7 +4097,7 @@ class text_filter extends \filtercodes_base_text_filter {
             // Required Parameter: Replace shortname with the shortname of the user profile field. Note that this is in both tags.
             // Requires content between tags.
             if (stripos($text, '{ifprofile_field_') !== false) {
-                $isuser = ($this->isauthenticateduser());
+                $isuser = (isloggedin() && !isguestuser());
 
                 // Cached the defined custom profile fields and data.
                 if (!isset($profilefields)) {
@@ -4180,7 +4115,7 @@ class text_filter extends \filtercodes_base_text_filter {
                     $tag = 'ifprofile_field_' . $field->shortname;
 
                     // If the tag exists, user is logged-in and we are allowed to evaluate this field.
-                    if (!empty($field->id) && isset($profiledata[$field->id]) && $isuser && ($field->visible != '0' || $allowall)) {
+                    if (isset($profiledata[$field->id]) && $isuser && ($field->visible != '0' || $allowall)) {
                         $data = trim($profiledata[$field->id]);
                     } else {
                         $data = '';
@@ -4263,7 +4198,7 @@ class text_filter extends \filtercodes_base_text_filter {
                                 break;
                             case 'contains':
                                 // If the specified field contains the specified value.
-                                // Example:{ifprofile email contains "@yoursite.com"}...{/ifprofile}.
+                                // Example:{ifprofile email contains "@example.com"}...{/ifprofile}.
                                 if (strpos($profilefields[$fieldname]->value, $value) !== false) {
                                     $content = $matches[4][$key];
                                 }
@@ -4653,7 +4588,7 @@ class text_filter extends \filtercodes_base_text_filter {
                     $replace['/\{ifminstudent\}/i'] = '';
                     $replace['/\{\/ifminstudent\}/i'] = '';
                 } else {
-                    // Remove the ifminstudent strings.
+                    // Remove the ifassistant strings.
                     $replace['/\{ifminstudent\}(.*)\{\/ifminstudent\}/isuU'] = '';
                 }
             }
@@ -4668,7 +4603,7 @@ class text_filter extends \filtercodes_base_text_filter {
             // Parameters: None.
             // Requires content between tags.
 
-            if ($this->isauthenticateduser()) { // If logged-in but not just as guest.
+            if (isloggedin() && !isguestuser()) { // If logged-in but not just as guest.
                 // Just remove ifloggedin tags.
                 if (stripos($text, '{ifloggedin}') !== false) {
                     $replace['/\{ifloggedin\}/i'] = '';
@@ -4870,51 +4805,30 @@ class text_filter extends \filtercodes_base_text_filter {
                 }
             }
 
-            // Tag: {ifnotingroup...}...{/ifnotingroup} with and without parameters.
+            // Tag: {ifnotingroup id|idnumber}...{/ifnotingroup}.
+            // Description: Display content if the user is NOT a member of the specified group.
+            // Required Parameters: group id or idnumber.
+            // Requires content between tags.
             if (stripos($text, '{ifnotingroup') !== false) {
-                // Tag: {ifnotingroup}...{/ifnotingroup}.
-                // Description: Display content if the user is NOT a member of any group.
-                // Required Parameters: None.
-                // Requires content between tags.
-                if (stripos($text, '{ifnotingroup}') !== false) {
-                    if (!isset($mygroupslist)) { // Fetch my groups.
-                        $mygroupslist = groups_get_all_groups($PAGE->course->id, $USER->id);
-                    }
-                    if (empty($mygroupslist)) {
-                        // User is not in any group, just remove the tags.
-                        $replace['/\{ifnotingroup\}/i'] = '';
-                        $replace['/\{\/ifnotingroup\}/i'] = '';
-                    } else {
-                        // User is in at least one group, remove tags and content.
-                        $replace['/\{ifnotingroup\}(.*)\{\/ifnotingroup\}/isuU'] = '';
-                    }
+                if (!isset($mygroupslist)) { // Fetch my groups.
+                    $mygroupslist = groups_get_all_groups($PAGE->course->id, $USER->id);
                 }
-
-                // Tag: {ifnotingroup id|idnumber}...{/ifnotingroup}.
-                // Description: Display content if the user is NOT a member of the specified group.
-                // Required Parameters: group id or idnumber.
-                // Requires content between tags.
-                if (stripos($text, '{ifnotingroup') !== false) {
-                    if (!isset($mygroupslist)) { // Fetch my groups.
-                        $mygroupslist = groups_get_all_groups($PAGE->course->id, $USER->id);
-                    }
-                    $re = '/{ifnotingroup\s+(.*)\}(.*)\{\/ifnotingroup\}/isuU';
-                    $found = preg_match_all($re, $text, $matches);
-                    if ($found > 0) {
-                        foreach ($matches[1] as $groupid) {
-                            $key = '/{ifnotingroup\s+' . $groupid . '\}(.*)\{\/ifnotingroup\}/isuU';
-                            $ismember = false;
-                            foreach ($mygroupslist as $group) {
-                                if ($groupid == $group->id || $groupid == $group->idnumber) {
-                                    $ismember = true;
-                                    break;
-                                }
+                $re = '/{ifnotingroup\s+(.*)\}(.*)\{\/ifnotingroup\}/isuU';
+                $found = preg_match_all($re, $text, $matches);
+                if ($found > 0) {
+                    foreach ($matches[1] as $groupid) {
+                        $key = '/{ifnotingroup\s+' . $groupid . '\}(.*)\{\/ifnotingroup\}/isuU';
+                        $ismember = false;
+                        foreach ($mygroupslist as $group) {
+                            if ($groupid == $group->id || $groupid == $group->idnumber) {
+                                $ismember = true;
+                                break;
                             }
-                            if ($ismember) { // Remove the ifnotingroup tags and content.
-                                $replace[$key] = '';
-                            } else { // Just remove the tags and keep the content.
-                                $replace[$key] = '$1';
-                            }
+                        }
+                        if ($ismember) { // Remove the ifnotingroup tags and content.
+                            $replace[$key] = '';
+                        } else { // Just remove the tags and keep the content.
+                            $replace[$key] = '$1';
                         }
                     }
                 }
@@ -4949,7 +4863,7 @@ class text_filter extends \filtercodes_base_text_filter {
                 }
             }
 
-            // Tag: {ifnotingrouping id|idnumber}...{/ifnotingrouping}.
+            // Tag: {ifnotingroup id|idnumber}...{/ifnotingroup}.
             // Description: Display content if the user is NOT a member of the specified grouping.
             // Required Parameters: group id or idnumber.
             // Requires content between tags.
@@ -5425,19 +5339,11 @@ class text_filter extends \filtercodes_base_text_filter {
             static $helpwrapper = [];
             if (!isset($help)) {
                 $help = get_string('help');
-                if ($CFG->branch >= 500) {
-                    $helpwrapper[0] = '<a class="btn btn-link p-0" role="button" data-bs-container="body" data-bs-toggle="popover"'
-                            . ' data-bs-placement="right" data-bs-content="<div class=&quot;no-overflow&quot;><p>';
-                    $helpwrapper[1] = '</p></div>" data-bs-html="true" tabindex="0" data-bs-trigger="focus"><i class="icon'
-                            . ' fa fa-circle-question text-info fa-fw " title="' . $help . '" aria-label="' . $help . '"></i></a>';
-                } else {
-                    $helpwrapper[0] = '<a class="btn btn-link p-0" role="button" data-container="body" data-toggle="popover"'
+                $helpwrapper[0] = '<a class="btn btn-link p-0" role="button" data-container="body" data-toggle="popover"'
                         . ' data-placement="right" data-content="<div class=&quot;no-overflow&quot;><p>';
-                    $helpwrapper[1] = '</p></div>" data-html="true" tabindex="0" data-trigger="focus"><i class="icon'
+                $helpwrapper[1] = '</p></div>" data-html="true" tabindex="0" data-trigger="focus"><i class="icon'
                         . ' fa fa-question-circle text-info fa-fw " title="' . $help . '" aria-label="' . $help . '"></i></a>';
-                }
             }
-
             $newtext = preg_replace_callback(
                 '/\{help\}(.*)\{\/help\}/isuU',
                 function ($matches) use ($helpwrapper) {
@@ -5459,17 +5365,10 @@ class text_filter extends \filtercodes_base_text_filter {
             static $infowrapper = [];
             if (!isset($info)) {
                 $info = get_string('info');
-                if ($CFG->branch >= 500) {
-                    $infowrapper[0] = '<a class="btn btn-link p-0" role="button" data-bs-container="body" data-bs-toggle="popover"'
-                        . ' data-bs-placement="right" data-bs-content="<div class=&quot;no-overflow&quot;><p>';
-                    $infowrapper[1] = '</p></div>" data-bs-html="true" tabindex="0" data-bs-trigger="focus"><i class="icon'
-                        . ' fa fa-circle-info text-info fa-fw " title="' . $info . '" aria-label="' . $info . '"></i></a>';
-                } else {
-                    $infowrapper[0] = '<a class="btn btn-link p-0" role="button" data-container="body" data-toggle="popover"'
+                $infowrapper[0] = '<a class="btn btn-link p-0" role="button" data-container="body" data-toggle="popover"'
                         . ' data-placement="right" data-content="<div class=&quot;no-overflow&quot;><p>';
-                    $infowrapper[1] = '</p></div>" data-html="true" tabindex="0" data-trigger="focus"><i class="icon'
+                $infowrapper[1] = '</p></div>" data-html="true" tabindex="0" data-trigger="focus"><i class="icon'
                         . ' fa fa-info-circle text-info fa-fw " title="' . $info . '" aria-label="' . $info . '"></i></a>';
-                }
             }
             $newtext = preg_replace_callback(
                 '/\{info\}(.*)\{\/info\}/isuU',
@@ -5488,7 +5387,6 @@ class text_filter extends \filtercodes_base_text_filter {
         if ($this->replacetags($text, $replace) == false) {
             // No more tags? Put back the escaped tags, if any, and return the string.
             $text = $this->escapedtags($text);
-            self::$infiltercodes = false;
             return $text;
         }
 
@@ -5560,9 +5458,6 @@ class text_filter extends \filtercodes_base_text_filter {
                 function ($matches) {
                     // Remove HTML tags created by filters like Activity Name Auto-Linking and Convert URLs Into Links.
                     $url = strip_tags($matches[1]);
-                    if (strpos($url, '&amp;') === 0) {
-                        $url = s($url);
-                    }
                     $label = $matches[2];
                     return '<a href="' . $url . '" class="btn btn-primary">' . $label . '</a>';
                 },
@@ -5578,7 +5473,6 @@ class text_filter extends \filtercodes_base_text_filter {
         $this->replacetags($text, $replace);
         // Put back the escaped tags.
         $text = $this->escapedtags($text);
-        self::$infiltercodes = false;
         return $text;
     }
 }
