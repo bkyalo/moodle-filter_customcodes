@@ -18,7 +18,7 @@
  * Settings for global custom tags for FilterCodes.
  *
  * @package    filter_filtercodes
- * @copyright  2017-2025 TNG Consulting Inc. - www.tngconsulting.ca
+ * @copyright  2017-2024 TNG Consulting Inc. - www.tngconsulting.ca
  * @author     Michael Milette
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -39,7 +39,7 @@ $title = get_string('globaltagcount', $name);
 $description = get_string('globaltagcountdesc', $name);
 $default = 0;
 $choices = [];
-for ($i = 0; $i <= 100; $i++) {
+for ($i = 0; $i <= 50; $i++) {
     $choices[$i] = $i;
 }
 $settings->add(new admin_setting_configselect($name . '/globaltagcount', $title, $description, $default, $choices));
@@ -60,7 +60,7 @@ for ($i = 1; $i <= $globaltagcount; $i++) {
         $tagtitle .  get_config($name, 'globalname' . $i),
         $tagdescription,
         $default,
-        PARAM_ALPHANUM
+        PARAM_ALPHA
     );
     $settings->add($setting);
 
