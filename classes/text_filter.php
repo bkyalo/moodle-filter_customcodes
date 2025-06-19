@@ -348,34 +348,34 @@ class text_filter extends \filtercodes_base_text_filter {
      * @return string HTML ordered list of course modules as cards.
      */
     private function list_course_modules() {
-        global $COURSE;
+    	global $COURSE;
 
-        if (!isset($COURSE->id)) {
-            return '';
-        }
+    	if (!isset($COURSE->id)) {
+        	return '';
+    	}
 
-        $courseid = $COURSE->id;
-        $modinfo = get_fast_modinfo($courseid);
-        $sections = $modinfo->get_section_info_all();
+    	$courseid = $COURSE->id;
+    	$modinfo = get_fast_modinfo($courseid);
+    	$sections = $modinfo->get_section_info_all();
 
-        // Remove section 0 from the list to start with and skip the last section
-        unset($sections[0]);
-        array_pop($sections); // Removes the last element from the array
+    	// Remove section 0 from the list to start with and skip the last section
+    	unset($sections[0]);
+    	array_pop($sections); // Removes the last element from the array
 
-        $html = '<ol class="olcards">';
-        foreach ($sections as $section) {
+    	$html = '<ol class="olcards">';
+    	foreach ($sections as $section) {
             if ($section->uservisible && $section->name) {
-                $color = $section->section % 2 == 0 ? '#037b90' : '#ff7f40'; // Alternate color based on section number
-                $url = new \moodle_url('/course/view.php', ['id' => $courseid, 'section' => $section->section]);
-                $html .= "<li style=\"\\$cardColor:{$color}\">";
-                $html .= '<div class="content">';
-                $html .= '<a style="color:black; text-decoration: none" href="' . $url . '">';
-                $html .= '<div class="title">' . format_string($section->name) . '</div>';
-                $html .= '</a></div></li>';
+            	$color = $section->section % 2 == 0 ? '#037b90' : '#ff7f40'; // Alternate color based on section number
+            	$url = new \moodle_url('/course/view.php', ['id' => $courseid, 'section' => $section->section]);
+            	$html .= "<li style=\"--cardColor:{$color}\">";
+            	$html .= '<div class="content">';
+            	$html .= '<a style="color:black; text-decoration: none" href="' . $url . '">';
+            	$html .= '<div class="title">' . format_string($section->name) . '</div>';
+            	$html .= '</a></div></li>';
             }
-        }
-        $html .= '</ol>';
-        return $html;
+    	}
+    	$html .= '</ol>';
+    	return $html;
     }
 
     /**
@@ -3385,15 +3385,13 @@ class text_filter extends \filtercodes_base_text_filter {
                     $replace['/\{courserequestmenu\}/i'] = '';
                 }
             }
-
-            // Tag: [listmodules]
-            // Description: Generates a list of course modules as cards.
-            // Parameters: None.
-            if (strpos($text, '[listmodules]') !== false) {
-                $module_list = $this->list_course_modules();
-                $text = str_replace('[listmodules]', $module_list, $text);
-            }
         }
+
+        // Check for [listmodules] and replace it
+        if (strpos($text, '[listmodules]') !== false) {
+            $module_list = $this->list_course_modules();
+            $text = str_replace('[listmodules]', $module_list, $text);
+        } 
 
         // These tags: {mycourses} and {mycoursesmenu} and {mycoursescards}.
         if (stripos($text, '{mycourse') !== false || stripos($text, '{myccourse') !== false) {
