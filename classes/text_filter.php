@@ -3476,6 +3476,27 @@ class text_filter extends \filtercodes_base_text_filter {
             }
         }
 
+        // Tag: {course_purpose}
+        // Description: Displays the value of the custom course purpose field
+        // Parameters: None
+        if (stripos($text, '{course_purpose}') !== false) {
+            $purpose = '';
+            if (isset($PAGE->course->id) && $PAGE->course->id > 1) { // Not site course
+                global $DB;
+                $field = $DB->get_record('customfield_field', ['shortname' => 'course_purpose']);
+                if ($field) {
+                    $data = $DB->get_record('customfield_data', [
+                        'fieldid' => $field->id,
+                        'instanceid' => $PAGE->course->id
+                    ]);
+                    if ($data && !empty($data->value)) {
+                        $purpose = format_string($data->value);
+                    }
+                }
+            }
+            $replace['/\{course_purpose\}/i'] = $purpose;
+        }
+
         // Tag: {editingtoggle}.
         // Description: Is "off" if in edit page mode. Otherwise "on". Useful for creating Turn Editing On/Off links.
         // Parameters: None.
