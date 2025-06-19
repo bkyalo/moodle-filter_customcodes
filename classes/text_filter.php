@@ -3497,6 +3497,27 @@ class text_filter extends \filtercodes_base_text_filter {
             $replace['/\{course_purpose\}/i'] = $purpose;
         }
 
+        // Tag: {course_content}
+        // Description: Displays the value of the custom course content field
+        // Parameters: None
+        if (stripos($text, '{course_content}') !== false) {
+            $content = '';
+            if (isset($PAGE->course->id) && $PAGE->course->id > 1) { // Not site course
+                global $DB;
+                $field = $DB->get_record('customfield_field', ['shortname' => 'course_content']);
+                if ($field) {
+                    $data = $DB->get_record('customfield_data', [
+                        'fieldid' => $field->id,
+                        'instanceid' => $PAGE->course->id
+                    ]);
+                    if ($data && !empty($data->value)) {
+                        $content = format_text($data->value, FORMAT_HTML);
+                    }
+                }
+            }
+            $replace['/\{course_content\}/i'] = $content;
+        }
+
         // Tag: {editingtoggle}.
         // Description: Is "off" if in edit page mode. Otherwise "on". Useful for creating Turn Editing On/Off links.
         // Parameters: None.
