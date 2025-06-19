@@ -1,7 +1,9 @@
 <img src="pix/logo.png" align="right" />
 
-FilterCodes filter plugin for Moodle
-====================================
+Custom FilterCodes Plugin for Moodle
+===================================
+
+This is a custom version of the Moodle FilterCodes plugin with additional features.
 ![PHP](https://img.shields.io/badge/PHP-v5.6%20to%20v8.3-blue.svg)
 ![Moodle](https://img.shields.io/badge/Moodle-v2.7%20to%20v5.0-orange.svg)
 [![GitHub Issues](https://img.shields.io/github/issues/michael-milette/moodle-filter_filtercodes.svg)](https://github.com/michael-milette/moodle-filter_filtercodes/issues)
@@ -158,6 +160,12 @@ To activate, go to Site Administration > Plugins > Filters > Manage filters" and
 IMPORTANT: This STABLE release has been tested on many Moodle sites. Although we expect everything to work, if you find a problem, please help by reporting it in the [Bug Tracker](https://github.com/michael-milette/moodle-filter_filtercodes/issues).
 
 FilterCodes are meant to be entered as regular text in the Moodle WYSIWYG editor though they will work equally well if entered in the HTML code view.
+
+## Custom Features
+
+### [listmodules] Tag
+
+Adds a list of course modules as cards. Simply add `[listmodules]` to any course content to display a list of course modules.
 
 ## List of FilterCode tags
 
