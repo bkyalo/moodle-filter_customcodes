@@ -5650,58 +5650,86 @@ class text_filter extends \filtercodes_base_text_filter {
             $courseModules = $this->list_course_modules();
             
             $tabshtml =
-            '<div class="tabs">' .
-            '    <ul class="nav nav-tabs">' .
-            '        <li class="nav-item">' .
-            '            <a class="nav-link active" href="#Course1" data-toggle="tab">Course Description</a>' .
-            '        </li>' .
-            '        <li class="nav-item">' .
-            '            <a class="nav-link" href="#Course2" data-toggle="tab">Course Content</a>' .
-            '        </li>' .
-            '        <li class="nav-item">' .
-            '            <a class="nav-link" href="#Course3" data-toggle="tab">Course Modules</a>' .
-            '        </li>' .
-            '    </ul>' .
-            '    <div class="tab-content">' .
-            '        <div class="tab-pane fade show active" id="Course1">' .
+            '<div class="tab">' .
+            '    <button class="tablinks active" onclick="openCity(event, \'Course1\')">' .
+            '        <i class="fas fa-info-circle"></i> Course Description' .
+            '    </button>' .
+            '    <button class="tablinks" onclick="openCity(event, \'Course2\')">' .
+            '        <i class="fas fa-book"></i> Course Content' .
+            '    </button>' .
+            '    <button class="tablinks" onclick="openCity(event, \'Course3\')">' .
+            '        <i class="fas fa-list-alt"></i> Course Modules' .
+            '    </button>' .
+            '</div>' .
+            '
+            <div id="Course1" class="dstabcontent open">' .
+            '    <div class="myrow">' .
+            '        <div class="mycolumn c-left">' .
+            '            <i class="fa fa-anchor"></i>' .
+            '        </div>' .
+            '        <div class="mycolumn c-right" style="background-color:#bbb;">' .
+            '            <h5 style="font-size:4px;">&nbsp;</h5>' .
             '            <h4>Course Purpose</h4>' .
-            '            ' . $coursePurpose .
-            '            <h4 class="mt-4">Course Learning Outcomes</h4>' .
-            '            ' . $courseOutcomes .
-            '        </div>' .
-            '        <div class="tab-pane fade" id="Course2">' .
-            '            ' . $courseContent .
-            '        </div>' .
-            '        <div class="tab-pane fade" id="Course3">' .
-            '            ' . $courseModules .
             '        </div>' .
             '    </div>' .
+            '    ' . $coursePurpose .
+            '    <p>&nbsp;</p>' .
+            '    <div class="myrow">' .
+            '        <div class="mycolumn c-left">' .
+            '            <i class="fa fa-key"></i>' .
+            '        </div>' .
+            '        <div class="mycolumn c-right" style="background-color:#bbb;">' .
+            '            <h5 style="font-size:4px;">&nbsp;</h5>' .
+            '            <h4>Course Learning Outcomes</h4>' .
+            '        </div>' .
+            '    </div>' .
+            '    ' . $courseOutcomes .
             '</div>' .
-            '<script>' .
-            '// Initialize Bootstrap tabs' .
-            'document.addEventListener("DOMContentLoaded", function() {' .
-            '    var tabLinks = document.querySelectorAll(".nav-tabs .nav-link");' .
-            '    tabLinks.forEach(function(link) {' .
-            '        link.addEventListener("click", function(e) {' .
-            '            e.preventDefault();' .
-            '            // Remove active class from all links and panes' .
-            '            tabLinks.forEach(function(link) {' .
-            '                link.classList.remove("active");' .
-            '                var pane = document.querySelector(link.getAttribute("href"));' .
-            '                if (pane) {' .
-            '                    pane.classList.remove("show", "active");' .
-            '                }' .
-            '            });' .
-            '            // Add active class to clicked link and corresponding pane' .
-            '            this.classList.add("active");' .
-            '            var targetPane = document.querySelector(this.getAttribute("href"));' .
-            '            if (targetPane) {' .
-            '                targetPane.classList.add("show", "active");' .
-            '            }' .
-            '        });' .
-            '    });' .
-            '});' .
-            '</script>';
+            '
+            <div id="Course2" class="dstabcontent">' .
+            '    <div class="myrow">' .
+            '        <div class="mycolumn c-left">' .
+            '            <i class="fa fa-cogs"></i>' .
+            '        </div>' .
+            '        <div class="mycolumn c-right" style="background-color:#bbb;">' .
+            '            <h5 style="font-size:4px;">&nbsp;</h5>' .
+            '            <h4>Course Content</h4>' .
+            '        </div>' .
+            '    </div>' .
+            '    ' . $courseContent .
+            '</div>' .
+            '
+            <div id="Course3" class="dstabcontent">' .
+            '    ' . $courseModules .
+            '</div>' .
+            '
+            <script>' .
+            'function openCity(evt, cityName) {' .
+            '    var i, tabcontent, tablinks;' .
+            '    tabcontent = document.getElementsByClassName("dstabcontent");' .
+            '    for (i = 0; i < tabcontent.length; i++) {' .
+            '        tabcontent[i].classList.remove("open");' .
+            '    }' .
+            '    tablinks = document.getElementsByClassName("tablinks");' .
+            '    for (i = 0; i < tablinks.length; i++) {' .
+            '        tablinks[i].classList.remove("active");' .
+            '    }' .
+            '    document.getElementById(cityName).classList.add("open");' .
+            '    evt.currentTarget.classList.add("active");' .
+            '}' .
+            '</script>' .
+            '<style>' .
+            '.dstabcontent { display: none; }' .
+            '.dstabcontent.open { display: block; }' .
+            '.tab { overflow: hidden; }' .
+            '.tab button { float: left; cursor: pointer; padding: 10px 16px; border: 1px solid #ccc; background: #f1f1f1; }' .
+            '.tab button:hover { background: #ddd; }' .
+            '.tab button.active { background: #ccc; }' .
+            '.myrow { display: flex; margin-bottom: 15px; }' .
+            '.mycolumn { padding: 10px; }' .
+            '.c-left { flex: 10%; background-color: #f1f1f1; text-align: center; }' .
+            '.c-right { flex: 90%; }' .n            '.fa { font-size: 24px; color: #555; }' .
+            '</style>';
 
             // Add the replacement pattern
             $replace['/\{coursetabs\}/i'] = $tabshtml;
