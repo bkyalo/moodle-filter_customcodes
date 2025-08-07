@@ -5717,20 +5717,7 @@ class text_filter extends \filtercodes_base_text_filter {
             '    document.getElementById(cityName).classList.add("open");' .
             '    evt.currentTarget.classList.add("active");' .
             '}' .
-            '</script>' .
-            '<style>' .
-            '.dstabcontent { display: none; }' .
-            '.dstabcontent.open { display: block; }' .
-            '.tab { overflow: hidden; }' .
-            '.tab button { float: left; cursor: pointer; padding: 10px 16px; border: 1px solid #ccc; background: #f1f1f1; }' .
-            '.tab button:hover { background: #ddd; }' .
-            '.tab button.active { background: #ccc; }' .
-            '.myrow { display: flex; margin-bottom: 15px; }' .
-            '.mycolumn { padding: 10px; }' .
-            '.c-left { flex: 10%; background-color: #f1f1f1; text-align: center; }' .
-            '.c-right { flex: 90%; }' . "\n" .
-            '.fa { font-size: 24px; color: #555; }' .
-            '</style>';
+            '</script>';
 
             // Add the replacement pattern
             $replace['/\{coursetabs\}/i'] = $tabshtml;

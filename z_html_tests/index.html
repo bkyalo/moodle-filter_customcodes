@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OUK Course Tabs Test</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Variables */
+        :root {
+            --primary-color: #037b90;
+            --secondary-color: #ff7f50;
+            --light-bg: #f8f9fa;
+            --dark-text: #333;
+            --light-text: #666;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Tab Navigation */
+        .ouk-tab {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 0 auto 30px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            padding: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Tab Buttons */
+        .ouk-tablinks {
+            position: relative;
+            background: linear-gradient(145deg, #fff, #f0f0f0);
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 16px 25px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 16px;
+            font-weight: 500;
+            color: #555;
+            border-radius: 10px;
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transform: translateY(0);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .ouk-tablinks i {
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .ouk-tablinks:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            color: var(--primary-color);
+            background: linear-gradient(145deg, #f8f9fa, #ffffff);
+        }
+
+        .ouk-tablinks.active {
+            background: linear-gradient(135deg, #037b90, #0290a8);
+            color: white !important;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(3, 123, 144, 0.3);
+            font-weight: 600;
+        }
+
+        .ouk-tablinks.active i {
+            color: white;
+        }
+
+        /* Tab Content */
+        .ouk-tabcontent {
+            display: none;
+            padding: 2rem;
+            background: #fff;
+            border-radius: var(--border-radius);
+            margin-top: 1.5rem;
+            animation: fadeIn 0.5s ease-out;
+            border-top: 4px solid var(--primary-color);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .ouk-tabcontent.active {
+            display: block;
+        }
+
+        /* Content Cards */
+        .ouk-content-card {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid #e9ecef;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+        }
+
+        .ouk-content-card h4 {
+            margin-top: 0;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 1.25rem;
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .ouk-content-card h4:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--secondary-color);
+        }
+
+        .ouk-content-card p, 
+        .ouk-content-card li {
+            color: var(--light-text);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .ouk-content-card ol, 
+        .ouk-content-card ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .ouk-content-card li {
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        /* Module List */
+        .lesson-items-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+
+        .lesson-item-6 {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .lesson-item-6:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .lesson-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .lesson-icon {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .lesson-dis {
+            flex: 1;
+        }
+
+        .lesson-title-sec h3 {
+            margin: 0;
+            color: var(--dark-text);
+            font-size: 1.1rem;
+        }
+
+        .lesson-result {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+            margin: 5px 0 0 0;
+            padding: 0;
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(10px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .ouk-tab {
+                flex-direction: column;
+                gap: 8px;
+                padding: 15px;
+                background: rgba(255, 255, 255, 0.7);
+            }
+            
+            .ouk-tablinks {
+                width: 100%;
+                border-radius: 8px;
+                padding: 15px;
+                justify-content: flex-start;
+            }
+            
+            .ouk-tabcontent {
+                padding: 1.5rem 1rem;
+                margin: 1rem 0;
+            }
+            
+            .ouk-content-card {
+                padding: 1.25rem;
+            }
+
+            .lesson-item-6 {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Course Information</h1>
+        
+        <!-- Tab Navigation -->
+        <div class="ouk-tab">
+            <button class="ouk-tablinks active" data-tab="course-description">
+                <i class="fas fa-book-open"></i>
+                <span>Course Description</span>
+            </button>
+            <button class="ouk-tablinks" data-tab="course-content">
+                <i class="fas fa-list-ul"></i>
+                <span>Course Content</span>
+            </button>
+            <button class="ouk-tablinks" data-tab="course-info">
+                <i class="fas fa-info-circle"></i>
+                <span>Course Information</span>
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="course-description" class="ouk-tabcontent active">
+            <div class="ouk-content-card">
+                <h4><i class="fas fa-anchor"></i> Course Purpose</h4>
+                <p>This course is designed to provide students with a comprehensive understanding of the subject matter, covering fundamental concepts, practical applications, and real-world examples. Through a combination of theoretical knowledge and hands-on exercises, students will develop the skills necessary to excel in this field.</p>
+            </div>
+
+            <div class="ouk-content-card">
+                <h4><i class="fas fa-graduation-cap"></i> Course Learning Outcomes</h4>
+                <p>By the end of this course, students will be able to:</p>
+                <ul>
+                    <li>Understand and apply core concepts in the field</li>
+                    <li>Analyze and solve complex problems using appropriate methodologies</li>
+                    <li>Develop critical thinking and analytical skills</li>
+                    <li>Communicate ideas and findings effectively</li>
+                    <li>Apply knowledge to real-world scenarios</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="course-content" class="ouk-tabcontent">
+            <div class="ouk-content-card">
+                <h4><i class="fas fa-book"></i> Course Content</h4>
+                <p>The course is divided into the following modules:</p>
+                <ol>
+                    <li>Introduction to the Subject</li>
+                    <li>Core Concepts and Theories</li>
+                    <li>Practical Applications</li>
+                    <li>Case Studies and Real-world Examples</li>
+                    <li>Advanced Topics and Future Directions</li>
+                </ol>
+                <p>Each module includes lectures, readings, assignments, and assessments to reinforce learning.</p>
+            </div>
+        </div>
+
+        <div id="course-info" class="ouk-tabcontent">
+            <div class="lesson-items-list">
+                <!-- Module 1 -->
+                <div class="lesson-item-6">
+                    <div class="lesson-left">
+                        <div class="lesson-icon">
+                            <i class="fa fa-book"></i>
+                        </div>
+                        <div class="lesson-dis">
+                            <div class="lesson-title-sec">
+                                <h3>Module 1: Introduction</h3>
+                            </div>
+                            <ul class="lesson-result">
+                                <li><i class="fa fa-clock-o"></i> <span class="release-date">Available now</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-primary">View</a>
+                </div>
+
+                <!-- Module 2 -->
+                <div class="lesson-item-6">
+                    <div class="lesson-left">
+                        <div class="lesson-icon">
+                            <i class="fa fa-laptop"></i>
+                        </div>
+                        <div class="lesson-dis">
+                            <div class="lesson-title-sec">
+                                <h3>Module 2: Core Concepts</h3>
+                            </div>
+                            <ul class="lesson-result">
+                                <li><i class="fa fa-clock-o"></i> <span class="release-date">Available now</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-primary">View</a>
+                </div>
+
+                <!-- Module 3 -->
+                <div class="lesson-item-6">
+                    <div class="lesson-left">
+                        <div class="lesson-icon">
+                            <i class="fa fa-tasks"></i>
+                        </div>
+                        <div class="lesson-dis">
+                            <div class="lesson-title-sec">
+                                <h3>Module 3: Assignments</h3>
+                            </div>
+                            <ul class="lesson-result">
+                                <li><i class="fa fa-clock-o"></i> <span class="release-date">Available now</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-primary">View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the first tab as active by default
+            const defaultTab = document.querySelector('.ouk-tablinks');
+            if (defaultTab) {
+                openTab({ currentTarget: defaultTab }, defaultTab.getAttribute('data-tab'));
+            }
+
+            // Add click event listeners to all tab buttons
+            const tabButtons = document.querySelectorAll('.ouk-tablinks');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const tabId = this.getAttribute('data-tab');
+                    openTab(e, tabId);
+                    
+                    // Store the active tab in localStorage
+                    if (typeof(Storage) !== 'undefined') {
+                        localStorage.setItem('activeTab', tabId);
+                    }
+                });
+            });
+
+            // Check for previously active tab in localStorage
+            if (typeof(Storage) !== 'undefined' && localStorage.getItem('activeTab')) {
+                const activeTab = document.querySelector(`.ouk-tablinks[data-tab="${localStorage.getItem('activeTab')}"]`);
+                if (activeTab) {
+                    openTab({ currentTarget: activeTab }, localStorage.getItem('activeTab'));
+                }
+            }
+        });
+
+        /**
+         * Opens the specified tab and updates the UI
+         * @param {Event} evt - The click event
+         * @param {string} tabId - The ID of the tab to open
+         */
+        function openTab(evt, tabId) {
+            // Hide all tab content
+            const tabContents = document.getElementsByClassName('ouk-tabcontent');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+
+            // Remove active class from all tab buttons
+            const tabButtons = document.getElementsByClassName('ouk-tablinks');
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+                tabButtons[i].setAttribute('aria-selected', 'false');
+            }
+
+            // Show the current tab and add active class to the button that opened the tab
+            const tabToShow = document.getElementById(tabId);
+            if (tabToShow) {
+                tabToShow.classList.add('active');
+                tabToShow.setAttribute('aria-expanded', 'true');
+                
+                // Trigger a custom event when a tab is shown
+                const event = new CustomEvent('tabShown', { 
+                    detail: { 
+                        tabId: tabId,
+                        tabElement: tabToShow
+                    } 
+                });
+                document.dispatchEvent(event);
+            }
+
+            if (evt && evt.currentTarget) {
+                evt.currentTarget.classList.add('active');
+                evt.currentTarget.setAttribute('aria-selected', 'true');
+            }
+        }
+
+        // Add keyboard navigation for better accessibility
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                const tabs = Array.from(document.querySelectorAll('.ouk-tablinks'));
+                const activeTab = document.querySelector('.ouk-tablinks.active');
+                let index = tabs.indexOf(activeTab);
+                
+                if (e.key === 'ArrowLeft') {
+                    index = (index - 1 + tabs.length) % tabs.length;
+                } else if (e.key === 'ArrowRight') {
+                    index = (index + 1) % tabs.length;
+                }
+                
+                const tabId = tabs[index].getAttribute('data-tab');
+                openTab({ currentTarget: tabs[index] }, tabId);
+                tabs[index].focus();
+            }
+        });
+    </script>
+</body>
+</html>
