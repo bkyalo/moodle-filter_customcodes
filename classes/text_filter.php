@@ -5722,7 +5722,7 @@ class text_filter extends \filtercodes_base_text_filter {
             '.dstabcontent { display: none; }' .
             '.dstabcontent.open { display: block; }' .
             '.tab button { cursor: pointer; }' .
-            '.tab button.active { background: #ccc; }' .
+            '.tab button.active { background: #ff7f50; }' .
             '</style>';
 
             // Add the replacement pattern
