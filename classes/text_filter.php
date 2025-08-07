@@ -5728,7 +5728,8 @@ class text_filter extends \filtercodes_base_text_filter {
             '.myrow { display: flex; margin-bottom: 15px; }' .
             '.mycolumn { padding: 10px; }' .
             '.c-left { flex: 10%; background-color: #f1f1f1; text-align: center; }' .
-            '.c-right { flex: 90%; }' .n            '.fa { font-size: 24px; color: #555; }' .
+            '.c-right { flex: 90%; }' . "\n" .
+            '.fa { font-size: 24px; color: #555; }' .
             '</style>';
 
             // Add the replacement pattern
