@@ -5511,6 +5511,169 @@ class text_filter extends \filtercodes_base_text_filter {
             }
         }
 
+        // Tag: {courseintropage}
+        // Description: Generates a course introduction page with cards and tabs for course information
+        // Parameters: None. Uses other tags like {course_purpose}, {course_learning_outcomes}, {course_content}, and [listmodules] for dynamic content
+        // Example: {courseintropage}
+        if (stripos($text, '{courseintropage}') !== false) {
+            $introhtml = '\n' .
+            '<div class="jumbotron jumbotron-fluid text-white shadow" style="background: linear-gradient(to top, var(--secondary), var(--primary), var(--info)); color:white; padding:1em; margin-bottom:1em;">' .
+            '    <h5><br></h5>' .
+            '    <div class="container">' .
+            '        <p><span id="label_content_504745">This section provides summary of useful links to resources and activities for your quick actions and course progression.<br></span></p>' .
+            '        <p></p>' .
+            '        <div class="row g-4">' .
+            '            <!-- Card 1 -->' .
+            '            <div class="col-12 col-md-6 col-lg-4">' .
+            '                <div class="card h-100 bg-white text-dark shadow border-0">' .
+            '                    <div class="card-img-top bg-info d-flex align-items-center text-white" style="height: 120px;">' .
+            '                        <i class="fa fa-link fa-3x m-auto" aria-hidden="true"></i>' .
+            '                    </div>' .
+            '                    <div class="card-body d-flex flex-column">' .
+            '                        <h4 class="card-title text-center mb-3">Student Hand Book</h4>' .
+            '                        <p class="card-text flex-grow-1">Please refer to the student handbook for assessment guidelines and support services.</p>' .
+            '                        <div class="mt-auto">' .
+            '                            <a class="btn btn-primary w-100 btn-lg" href="https://example.com/student-handbook.pdf" role="button">' .
+            '                                <i class="fa fa-youtube-play me-2" aria-hidden="true"></i> File' .
+            '                            </a>' .
+            '                        </div>' .
+            '                    </div>' .
+            '                </div>' .
+            '            </div>' .
+            '            ' .
+            '            <!-- Card 2 -->' .
+            '            <div class="col-12 col-md-6 col-lg-4">' .
+            '                <div class="card h-100 bg-white text-dark shadow border-0">' .
+            '                    <div class="card-img-top bg-info d-flex align-items-center text-white" style="height: 120px;">' .
+            '                        <i class="fa fa-gamepad fa-3x m-auto" aria-hidden="true"></i>' .
+            '                    </div>' .
+            '                    <div class="card-body d-flex flex-column">' .
+            '                        <h4 class="card-title text-center mb-3">Communication Corner</h4>' .
+            '                        <p class="card-text flex-grow-1">General news, announcements and space to have your say.</p>' .
+            '                        <div class="mt-auto">' .
+            '                            <a class="btn btn-primary w-100 btn-lg" href="#" role="button">' .
+            '                                <i class="fa fa-paper-plane me-2" aria-hidden="true"></i> Submit' .
+            '                            </a>' .
+            '                        </div>' .
+            '                    </div>' .
+            '                </div>' .
+            '            </div>' .
+            '            ' .
+            '            <!-- Card 3 -->' .
+            '            <div class="col-12 col-md-6 col-lg-4">' .
+            '                <div class="card h-100 bg-white text-dark shadow border-0">' .
+            '                    <div class="card-img-top bg-info d-flex align-items-center text-white" style="height: 120px;">' .
+            '                        <i class="fa fa-file-text fa-3x m-auto" aria-hidden="true"></i>' .
+            '                    </div>' .
+            '                    <div class="card-body d-flex flex-column">' .
+            '                        <h4 class="card-title text-center mb-3">Learning Guide</h4>' .
+            '                        <p class="card-text flex-grow-1">Specific resources are available here for you to view/download within each relevant area of the course.</p>' .
+            '                        <div class="mt-auto">' .
+            '                            <a class="btn btn-primary w-100 btn-lg" href="#" role="button">' .
+            '                                <i class="fa fa-download me-2" aria-hidden="true"></i> Learn' .
+            '                            </a>' .
+            '                        </div>' .
+            '                    </div>' .
+            '                </div>' .
+            '            </div>' .
+            '        </div>' .
+            '    </div>' .
+            '</div>' .
+            '<div>' .
+            '    <br>' .
+            '    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>' .
+            '' .
+            '    <div class="tab">' .
+            '        <button class="tablinks active" onclick="openCity(event, \'Course1\')">' .
+            '            <i class="fas fa-info-circle"></i> Course Description' .
+            '        </button>' .
+            '        <button class="tablinks" onclick="openCity(event, \'Course2\')">' .
+            '            <i class="fas fa-book"></i> Course Content' .
+            '        </button>' .
+            '        <button class="tablinks" onclick="openCity(event, \'Course3\')">' .
+            '            <i class="fas fa-list-alt"></i> Course Modules' .
+            '        </button>' .
+            '    </div>' .
+            '' .
+            '    <div id="Course1" class="dstabcontent" style="display:block;">' .
+            '        <div class="myrow">' .
+            '            <div class="mycolumn c-left">' .
+            '                <i class="fa fa-anchor"></i>' .
+            '            </div>' .
+            '            <div class="mycolumn c-right" style="background-color:#bbb;">' .
+            '                <h5 style="font-size:4px;">&nbsp;</h5>' .
+            '                <h4>Course Purpose</h4>' .
+            '            </div>' .
+            '        </div>' .
+            '        <!-- Course Purpose will be inserted here by {course_purpose} tag -->' .
+            '        {course_purpose}' .
+            '        <p>&nbsp;</p>' .
+            '        <div class="myrow">' .
+            '            <div class="mycolumn c-left">' .
+            '                <i class="fa fa-key"></i>' .
+            '            </div>' .
+            '            <div class="mycolumn c-right" style="background-color:#bbb;">' .
+            '                <h5 style="font-size:4px;">&nbsp;</h5>' .
+            '                <h4>Course Learning Outcomes</h4>' .
+            '            </div>' .
+            '        </div>' .
+            '        {course_learning_outcomes}' .
+            '    </div>' .
+            '' .
+            '    <div id="Course2" class="dstabcontent">' .
+            '        <div class="myrow">' .
+            '            <div class="mycolumn c-left">' .
+            '                <i class="fa fa-cogs"></i>' .
+            '            </div>' .
+            '            <div class="mycolumn c-right" style="background-color:#bbb;">' .
+            '                <h5 style="font-size:4px;">&nbsp;</h5>' .
+            '                <h4>Course Content</h4>' .
+            '            </div>' .
+            '        </div>' .
+            '        <!-- Course Content will be inserted here by {course_content} tag -->' .
+            '        {course_content}' .
+            '    </div>' .
+            '' .
+            '    <div id="Course3" class="dstabcontent">' .
+            '        <!-- Modules will be listed here by [listmodules] tag -->' .
+            '        [listmodules]' .
+            '    </div>' .
+            '' .
+            '    <style>' .
+            '    .tab {overflow: hidden; border: 1px solid #ccc; background-color: #f1f1f1;}' .
+            '    .tab button {background-color: inherit; float: left; border: none; outline: none; cursor: pointer; padding: 14px 16px; transition: 0.3s; font-size: 17px;}' .
+            '    .tab button:hover {background-color: #ddd;}' .
+            '    .tab button.active {background-color: #ccc;}' .
+            '    .dstabcontent {display: none; padding: 6px 12px; border: 1px solid #ccc; border-top: none;}' .
+            '    .myrow {display: flex; margin-bottom: 15px;}' .
+            '    .mycolumn {padding: 10px;}' .
+            '    .c-left {flex: 10%; background-color: #f1f1f1; text-align: center;}' .
+            '    .c-right {flex: 90%;}' .
+            '    .mycolumn i {font-size: 24px; color: #555;}' .
+            '    </style>' .
+            '' .
+            '    <script>' .
+            '    function openCity(evt, cityName) {' .
+            '        var i, tabcontent, tablinks;' .
+            '        tabcontent = document.getElementsByClassName("dstabcontent");' .
+            '        for (i = 0; i < tabcontent.length; i++) {' .
+            '            tabcontent[i].style.display = "none";' .
+            '        }' .
+            '        tablinks = document.getElementsByClassName("tablinks");' .
+            '        for (i = 0; i < tablinks.length; i++) {' .
+            '            tablinks[i].className = tablinks[i].className.replace(" active", "");' .
+            '        }' .
+            '        document.getElementById(cityName).style.display = "block";' .
+            '        evt.currentTarget.className += " active";' .
+            '    }' .
+            '    </script>' .
+            '</div>' .
+            '\n';
+
+            // Add the replacement pattern
+            $replace['/\{courseintropage\}/i'] = $introhtml;
+        }
+
         // Tag: {button URL}...{/button}.
         // Description: Creates a button that displays the content and links to the specified URL.
         // Required Parameter: URL. You also need to specify the content which will become the text in the button.
