@@ -5516,7 +5516,7 @@ class text_filter extends \filtercodes_base_text_filter {
         // Parameters: None. Uses other tags like {course_purpose}, {course_learning_outcomes}, {course_content}, and [listmodules] for dynamic content
         // Example: {courseintropage}
         if (stripos($text, '{courseintropage}') !== false) {
-            $introhtml = '\n' .
+            $introhtml =
             '<div class="jumbotron jumbotron-fluid text-white shadow" style="background: linear-gradient(to top, var(--secondary), var(--primary), var(--info)); color:white; padding:1em; margin-bottom:1em;">' .
             '    <h5><br></h5>' .
             '    <div class="container">' .
@@ -5667,8 +5667,7 @@ class text_filter extends \filtercodes_base_text_filter {
             '        evt.currentTarget.className += " active";' .
             '    }' .
             '    </script>' .
-            '</div>' .
-            '\n';
+            '</div>';
 
             // Add the replacement pattern
             $replace['/\{courseintropage\}/i'] = $introhtml;
