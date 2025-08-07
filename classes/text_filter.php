@@ -5584,6 +5584,102 @@ class text_filter extends \filtercodes_base_text_filter {
             $replace['/\{courseintropage\}/i'] = $introhtml;
         }
 
+        // Tag: {coursetabs}
+        // Description: Generates a tabbed interface for course information
+        // Parameters: None. Uses other tags like {course_purpose}, {course_learning_outcomes}, {course_content}, and [listmodules] for dynamic content
+        // Example: {coursetabs}
+        if (stripos($text, '{coursetabs}') !== false) {
+            $tabshtml =
+            '<div class="course-tabs">' .
+            '    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>' .
+            '    <div class="tab">' .
+            '        <button class="tablinks active" onclick="openCourseTab(event, \'Course1\')">' .
+            '            <i class="fas fa-info-circle"></i> Course Description' .
+            '        </button>' .
+            '        <button class="tablinks" onclick="openCourseTab(event, \'Course2\')">' .
+            '            <i class="fas fa-book"></i> Course Content' .
+            '        </button>' .
+            '        <button class="tablinks" onclick="openCourseTab(event, \'Course3\')">' .
+            '            <i class="fas fa-list-alt"></i> Course Modules' .
+            '        </button>' .
+            '    </div>' .
+            '    ' .
+            '    <div id="Course1" class="dstabcontent" style="display:block;">' .
+            '        <div class="myrow">' .
+            '            <div class="mycolumn c-left">' .
+            '                <i class="fa fa-anchor"></i>' .
+            '            </div>' .
+            '            <div class="mycolumn c-right" style="background-color:#bbb;">' .
+            '                <h5 style="font-size:4px;">&nbsp;</h5>' .
+            '                <h4>Course Purpose</h4>' .
+            '            </div>' .
+            '        </div>' .
+            '        {course_purpose}' .
+            '        <p>&nbsp;</p>' .
+            '        <div class="myrow">' .
+            '            <div class="mycolumn c-left">' .
+            '                <i class="fa fa-key"></i>' .
+            '            </div>' .
+            '            <div class="mycolumn c-right" style="background-color:#bbb;">' .
+            '                <h5 style="font-size:4px;">&nbsp;</h5>' .
+            '                <h4>Course Learning Outcomes</h4>' .
+            '            </div>' .
+            '        </div>' .
+            '        {course_learning_outcomes}' .
+            '    </div>' .
+            '    ' .
+            '    <div id="Course2" class="dstabcontent">' .
+            '        <div class="myrow">' .
+            '            <div class="mycolumn c-left">' .
+            '                <i class="fa fa-cogs"></i>' .
+            '            </div>' .
+            '            <div class="mycolumn c-right" style="background-color:#bbb;">' .
+            '                <h5 style="font-size:4px;">&nbsp;</h5>' .
+            '                <h4>Course Content</h4>' .
+            '            </div>' .
+            '        </div>' .
+            '        {course_content}' .
+            '    </div>' .
+            '    ' .
+            '    <div id="Course3" class="dstabcontent">' .
+            '        [listmodules]' .
+            '    </div>' .
+            '    ' .
+            '    <style>' .
+            '    .course-tabs { margin: 20px 0; }' .
+            '    .tab { overflow: hidden; border: 1px solid #ccc; background-color: #f1f1f1; }' .
+            '    .tab button { background-color: inherit; float: left; border: none; outline: none; cursor: pointer; padding: 14px 16px; transition: 0.3s; font-size: 17px; }' .
+            '    .tab button:hover { background-color: #ddd; }' .
+            '    .tab button.active { background-color: #ccc; }' .
+            '    .dstabcontent { display: none; padding: 6px 12px; border: 1px solid #ccc; border-top: none; }' .
+            '    .myrow { display: flex; margin-bottom: 15px; }' .
+            '    .mycolumn { padding: 10px; }' .
+            '    .c-left { flex: 10%; background-color: #f1f1f1; text-align: center; }' .
+            '    .c-right { flex: 90%; }' .
+            '    .mycolumn i { font-size: 24px; color: #555; }' .
+            '    </style>' .
+            '    ' .
+            '    <script>' .
+            '    function openCourseTab(evt, tabName) {' .
+            '        var i, tabcontent, tablinks;' .
+            '        tabcontent = document.getElementsByClassName("dstabcontent");' .
+            '        for (i = 0; i < tabcontent.length; i++) {' .
+            '            tabcontent[i].style.display = "none";' .
+            '        }' .
+            '        tablinks = document.getElementsByClassName("tablinks");' .
+            '        for (i = 0; i < tablinks.length; i++) {' .
+            '            tablinks[i].className = tablinks[i].className.replace(" active", "");' .
+            '        }' .
+            '        document.getElementById(tabName).style.display = "block";' .
+            '        evt.currentTarget.className += " active";' .
+            '    }' .
+            '    </script>' .
+            '</div>';
+
+            // Add the replacement pattern
+            $replace['/\{coursetabs\}/i'] = $tabshtml;
+        }
+
         // Tag: {button URL}...{/button}.
         // Description: Creates a button that displays the content and links to the specified URL.
         // Required Parameter: URL. You also need to specify the content which will become the text in the button.
