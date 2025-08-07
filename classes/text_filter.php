@@ -5587,7 +5587,7 @@ class text_filter extends \filtercodes_base_text_filter {
             '                        <h4 class="card-title text-center mb-3">Student Hand Book</h4>' .
             '                        <p class="card-text flex-grow-1">Please refer to the student handbook for assessment guidelines and support services.</p>' .
             '                        <div class="mt-auto">' .
-            '                            <a class="btn btn-primary w-100 btn-lg" href="https://example.com/student-handbook.pdf" role="button">' .
+            '                            <a class="btn btn-primary w-100 btn-lg" href="https://ouk.ac.ke/sites/default/files/StdHndbk/StudenthandBook-OUK.pdf" role="button">' .
             '                                <i class="fa fa-youtube-play me-2" aria-hidden="true"></i> File' .
             '                            </a>' .
             '                        </div>' .
