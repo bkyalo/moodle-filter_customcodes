@@ -5717,7 +5717,13 @@ class text_filter extends \filtercodes_base_text_filter {
             '    document.getElementById(cityName).classList.add("open");' .
             '    evt.currentTarget.classList.add("active");' .
             '}' .
-            '</script>';
+            '</script>' .
+            '<style>' .
+            '.dstabcontent { display: none; }' .
+            '.dstabcontent.open { display: block; }' .
+            '.tab button { cursor: pointer; }' .
+            '.tab button.active { background: #ccc; }' .
+            '</style>';
 
             // Add the replacement pattern
             $replace['/\{coursetabs\}/i'] = $tabshtml;
