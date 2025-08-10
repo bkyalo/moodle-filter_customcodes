@@ -1619,32 +1619,53 @@ class text_filter extends \filtercodes_base_text_filter {
     }
     
     /**
-     * Get course learning outcomes
+     * Get course learning outcomes from custom field
      */
     private function get_course_learning_outcomes() {
-        $outcomes = [
-            'Understand and apply core concepts',
-            'Analyze and solve complex problems',
-            'Develop critical thinking skills',
-            'Communicate ideas effectively',
-            'Apply knowledge to real-world scenarios'
-        ];
+        global $COURSE;
         
-        $html = '<ul>';
-        foreach ($outcomes as $outcome) {
-            $html .= '<li>' . s($outcome) . '</li>';
+        if (!isset($COURSE->id)) {
+            return '';
         }
-        $html .= '</ul>';
         
-        return $html;
+        // Try to get from custom field if available
+        if (class_exists('core_course\\customfield\\course_handler')) {
+            $handler = \core_course\customfield\course_handler::create();
+            $data = $handler->get_instance_data($COURSE->id);
+            foreach ($data as $field) {
+                if ($field->get_field()->get('shortname') === 'course_learning_outcomes') {
+                    $value = $field->export_value();
+                    return !empty($value) ? format_text($value) : '';
+                }
+            }
+        }
+        
+        return '';
     }
     
     /**
-     * Get course content overview
+     * Get course content from custom field
      */
     private function get_course_content() {
-        return '<p>This course is structured into several modules, each focusing on key aspects of the subject. ' .
-               'The content is delivered through a combination of lectures, readings, and activities.</p>';
+        global $COURSE;
+        
+        if (!isset($COURSE->id)) {
+            return '';
+        }
+        
+        // Try to get from custom field if available
+        if (class_exists('core_course\\customfield\\course_handler')) {
+            $handler = \core_course\customfield\course_handler::create();
+            $data = $handler->get_instance_data($COURSE->id);
+            foreach ($data as $field) {
+                if ($field->get_field()->get('shortname') === 'course_content') {
+                    $value = $field->export_value();
+                    return !empty($value) ? format_text($value) : '';
+                }
+            }
+        }
+        
+        return '';
     }
 
     /**
