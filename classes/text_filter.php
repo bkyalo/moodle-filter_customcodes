@@ -5730,7 +5730,7 @@ class text_filter extends \filtercodes_base_text_filter {
             '    tabcontent = document.getElementsByClassName("dstabcontent");' .
             '    for (i = 0; i < tabcontent.length; i++) {' .
             '        tabcontent[i].classList.remove("open");' .
-            '    }' .
+            '    }' .   
             '    tablinks = document.getElementsByClassName("tablinks");' .
             '    for (i = 0; i < tablinks.length; i++) {' .
             '        tablinks[i].classList.remove("active");' .
