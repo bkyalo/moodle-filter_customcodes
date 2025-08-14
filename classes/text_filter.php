@@ -5672,7 +5672,7 @@ class text_filter extends \filtercodes_base_text_filter {
             
             $tabshtml =
             '<div class="tab">' .
-            '    <button class="tablinks active" onclick="openCity(event, \'Course1\')">' .
+            '    <button class="tablinks" onclick="openCity(event, \'Course1\')">' .
             '        <i class="fas fa-info-circle"></i> Course Description' .
             '    </button>' .
             '    <button class="tablinks" onclick="openCity(event, \'Course2\')">' .
