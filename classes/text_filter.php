@@ -5683,7 +5683,7 @@ class text_filter extends \filtercodes_base_text_filter {
             '    </button>' .
             '</div>' .
             '
-            <div id="Course1" class="dstabcontent open">' .
+            <div id="Course1" class="dstabcontent">' .
             '    <div class="myrow">' .
             '        <div class="mycolumn c-left">' .
             '            <i class="fa fa-anchor"></i>' .
