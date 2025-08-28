@@ -1608,7 +1608,7 @@ class text_filter extends \filtercodes_base_text_filter {
             $handler = \core_course\customfield\course_handler::create();
             $data = $handler->get_instance_data($COURSE->id);
             foreach ($data as $field) {
-                if ($field->get_field()->get('shortname') === 'purpose') {
+                if ($field->get_field()->get('shortname') === 'course_purpose') {
                     return format_text($field->export_value());
                 }
             }
