@@ -482,8 +482,8 @@ details[open] > summary {
     color: #037b90;
 }
 
-/* ------ Hash-anchor accordion ------ */
-.accordion {
+/* ------ Hash-anchor accordion (URL hash toggle, distinct from Bootstrap accordion) ------ */
+.fc-anchor-accordion {
     position: relative;
     margin: 60px auto;
     width: 90%;
@@ -505,7 +505,7 @@ details[open] > summary {
     display: none;
 }
 
-.accordion a {
+.fc-anchor-accordion a {
     color: #fff;
     font-size: 1.25em;
     font-weight: normal;
@@ -548,17 +548,17 @@ details[open] > summary {
     -moz-transition: all 0.1s ease;
 }
 
-.accordion span:target ~ .accordion-content {
+.fc-anchor-accordion span:target ~ .accordion-content {
     display: block;
     height: auto;
     padding-bottom: 25px;
     padding-top: 10px;
 }
 
-.accordion span:target ~ [id*="close-accordion"] { display: block; }
-.accordion span:target ~ [id*="open-accordion"] { display: none; }
+.fc-anchor-accordion span:target ~ [id*="close-accordion"] { display: block; }
+.fc-anchor-accordion span:target ~ [id*="open-accordion"] { display: none; }
 
-.accordion span:target ~ [id*="close-accordion"]:after {
+.fc-anchor-accordion span:target ~ [id*="close-accordion"]:after {
     border-top: 10px solid #333;
     transform: rotate(0deg);
     -webkit-transform: rotate(0deg);
@@ -738,7 +738,6 @@ div#fitem_id_maildisplay {
 }
 
 .intro_icon_container {
-    display: inline-block;
     float: left;
     padding-left: 25px;
     margin-top: -5px;
@@ -796,7 +795,6 @@ div#fitem_id_maildisplay {
 }
 
 .checklist_icon_container {
-    display: inline-block;
     float: left;
     padding-left: 35px;
     margin-top: -10px;
