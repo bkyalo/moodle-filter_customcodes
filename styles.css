@@ -1827,8 +1827,8 @@ table.ouk_intro_block { border: none; }
 
 #learning-materials    { background-color: #ECEBF7; border-left: 8px solid #0C0B9A; }
 #activities-engagement { background-color: #ECF6F0; border-left: 8px solid #149247; }
-#assessment            { background-color: #cceff1; border-left: 8px solid #025f6d; }
-#additional-resources  { background-color: #ffd1c1; border-left: 8px solid #f76c41; }
+#assessment            { background-color: #CECEEB; border-left: 8px solid #08086C; }
+#additional-resources  { background-color: #D0E9DA; border-left: 8px solid #117C3C; }
 
 #learning-materials h2,
 #activities-engagement h2,
@@ -1842,10 +1842,10 @@ table.ouk_intro_block { border: none; }
     border-bottom: 2px solid;
 }
 
-#learning-materials h2    { color: #025f6d; border-color: #025f6d; }
-#activities-engagement h2 { color: #f76c41; border-color: #f76c41; }
-#assessment h2            { color: #01434d; border-color: #01434d; }
-#additional-resources h2  { color: #ff6347; border-color: #ff6347; }
+#learning-materials h2    { color: #0C0B9A; border-color: #0C0B9A; }
+#activities-engagement h2 { color: #149247; border-color: #149247; }
+#assessment h2            { color: #08086C; border-color: #08086C; }
+#additional-resources h2  { color: #117C3C; border-color: #117C3C; }
 
 #learning-materials h4,
 #activities-engagement h4,
