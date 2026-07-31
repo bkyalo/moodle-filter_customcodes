@@ -5592,60 +5592,53 @@ class text_filter extends \filtercodes_base_text_filter {
         // Example: {courseintropage}
         if (stripos($text, '{courseintropage}') !== false) {
             $introhtml =
-            '<div class="jumbotron jumbotron-fluid text-white shadow" style="background: linear-gradient(to top, var(--secondary), var(--primary), var(--info)); color:white; padding:1em; margin-bottom:1em;">' .
-            '    <h5><br></h5>' .
+            '<div class="jumbotron jumbotron-fluid text-white shadow" style="background:#149247; color:white; padding:1.75em 1.25em; margin-bottom:1em;">' .
             '    <div class="container">' .
-            '        <p><span id="label_content_504745">This section provides summary of useful links to resources and activities for your quick actions and course progression.<br></span></p>' .
-            '        <p></p>' .
+            '        <p class="mb-4">This section provides a summary of useful links to resources and activities for your quick actions and course progression.</p>' .
             '        <div class="row g-4">' .
-            '            <!-- Card 1 -->' .
             '            <div class="col-12 col-md-6 col-lg-4">' .
-            '                <div class="card h-100 bg-white text-dark shadow border-0">' .
-            '                    <div class="card-img-top bg-info d-flex align-items-center text-white" style="height: 120px;">' .
-            '                        <i class="fa fa-link fa-3x m-auto" aria-hidden="true"></i>' .
+            '                <div class="card ouk-intro-card h-100 bg-white text-dark shadow border-0">' .
+            '                    <div class="card-img-top d-flex align-items-center text-white">' .
+            '                        <i class="fa fa-book fa-3x m-auto" aria-hidden="true"></i>' .
             '                    </div>' .
             '                    <div class="card-body d-flex flex-column">' .
-            '                        <h4 class="card-title text-center mb-3">Student Hand Book</h4>' .
-            '                        <p class="card-text flex-grow-1">Please refer to the student handbook for assessment guidelines and support services.</p>' .
-            '                        <div class="mt-auto">' .
+            '                        <h4 class="card-title">Student Hand Book</h4>' .
+            '                        <p class="card-text">Please refer to the student handbook for assessment guidelines and support services.</p>' .
+            '                        <div class="mt-auto pt-3">' .
             '                            <a class="btn btn-primary w-100 btn-lg" href="https://ouk.ac.ke/sites/default/files/StdHndbk/StudenthandBook-OUK.pdf" role="button">' .
-            '                                <i class="fa fa-youtube-play me-2" aria-hidden="true"></i> File' .
+            '                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i> Open file' .
             '                            </a>' .
             '                        </div>' .
             '                    </div>' .
             '                </div>' .
             '            </div>' .
-            '            ' .
-            '            <!-- Card 2 -->' .
             '            <div class="col-12 col-md-6 col-lg-4">' .
-            '                <div class="card h-100 bg-white text-dark shadow border-0">' .
-            '                    <div class="card-img-top bg-info d-flex align-items-center text-white" style="height: 120px;">' .
-            '                        <i class="fa fa-gamepad fa-3x m-auto" aria-hidden="true"></i>' .
+            '                <div class="card ouk-intro-card h-100 bg-white text-dark shadow border-0">' .
+            '                    <div class="card-img-top d-flex align-items-center text-white">' .
+            '                        <i class="fa fa-comments fa-3x m-auto" aria-hidden="true"></i>' .
             '                    </div>' .
             '                    <div class="card-body d-flex flex-column">' .
-            '                        <h4 class="card-title text-center mb-3">Communication Corner</h4>' .
-            '                        <p class="card-text flex-grow-1">General news, announcements and space to have your say.</p>' .
-            '                        <div class="mt-auto">' .
+            '                        <h4 class="card-title">Communication Corner</h4>' .
+            '                        <p class="card-text">General news, announcements and space to have your say.</p>' .
+            '                        <div class="mt-auto pt-3">' .
             '                            <a class="btn btn-primary w-100 btn-lg" href="#" role="button">' .
-            '                                <i class="fa fa-paper-plane me-2" aria-hidden="true"></i> Submit' .
+            '                                <i class="fa fa-paper-plane" aria-hidden="true"></i> Submit' .
             '                            </a>' .
             '                        </div>' .
             '                    </div>' .
             '                </div>' .
             '            </div>' .
-            '            ' .
-            '            <!-- Card 3 -->' .
             '            <div class="col-12 col-md-6 col-lg-4">' .
-            '                <div class="card h-100 bg-white text-dark shadow border-0">' .
-            '                    <div class="card-img-top bg-info d-flex align-items-center text-white" style="height: 120px;">' .
-            '                        <i class="fa fa-file-text fa-3x m-auto" aria-hidden="true"></i>' .
+            '                <div class="card ouk-intro-card h-100 bg-white text-dark shadow border-0">' .
+            '                    <div class="card-img-top d-flex align-items-center text-white">' .
+            '                        <i class="fa fa-graduation-cap fa-3x m-auto" aria-hidden="true"></i>' .
             '                    </div>' .
             '                    <div class="card-body d-flex flex-column">' .
-            '                        <h4 class="card-title text-center mb-3">Learning Guide</h4>' .
-            '                        <p class="card-text flex-grow-1">Specific resources are available here for you to view/download within each relevant area of the course.</p>' .
-            '                        <div class="mt-auto">' .
+            '                        <h4 class="card-title">Learning Guide</h4>' .
+            '                        <p class="card-text">Specific resources are available here for you to view/download within each relevant area of the course.</p>' .
+            '                        <div class="mt-auto pt-3">' .
             '                            <a class="btn btn-primary w-100 btn-lg" href="#" role="button">' .
-            '                                <i class="fa fa-download me-2" aria-hidden="true"></i> Learn' .
+            '                                <i class="fa fa-download" aria-hidden="true"></i> Learn' .
             '                            </a>' .
             '                        </div>' .
             '                    </div>' .

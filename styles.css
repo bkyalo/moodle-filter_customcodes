@@ -108,10 +108,123 @@ kbd {
     display: none;
 }
 
-/* ------ {courseintropage} jumbotron gradient ------ */
+/* ------ {courseintropage} jumbotron + resource cards ------ */
 /* Overrides the inline style set by the PHP filter */
 .jumbotron.jumbotron-fluid.text-white.shadow {
-    background: linear-gradient(135deg, #149247, #0C0B9A) !important;
+    background: #149247 !important;
+    border-radius: 12px;
+    padding: 1.75rem 1.25rem !important;
+}
+
+.jumbotron.jumbotron-fluid.text-white.shadow > .container > p {
+    opacity: 0.95;
+    max-width: 52rem;
+}
+
+/* Resource cards inside the intro jumbotron */
+.jumbotron .ouk-intro-card,
+.jumbotron .card.bg-white.border-0 {
+    border-radius: 14px;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(12, 11, 154, 0.12);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.jumbotron .ouk-intro-card:hover,
+.jumbotron .card.bg-white.border-0:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px rgba(12, 11, 154, 0.18);
+}
+
+.jumbotron .ouk-intro-card .card-img-top,
+.jumbotron .card.bg-white.border-0 > .card-img-top.bg-info,
+.jumbotron .card.bg-white.border-0 > .card-img-top.bg-primary:not(:empty) {
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-400)) !important;
+    min-height: 110px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Collapse stray empty primary strip (legacy markup) into a green accent bar */
+.jumbotron .card.bg-white.border-0 > .card-img-top.bg-primary:empty {
+    background: var(--secondary-500) !important;
+    min-height: 0;
+    height: 5px;
+    padding: 0 !important;
+}
+
+.jumbotron .ouk-intro-card .card-img-top i,
+.jumbotron .card.bg-white.border-0 > .card-img-top i {
+    font-size: 2.25rem;
+    color: #fff;
+    opacity: 0.95;
+}
+
+.jumbotron .ouk-intro-card .card-body,
+.jumbotron .card.bg-white.border-0 .card-body {
+    padding: 1.25rem 1.35rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+}
+
+.jumbotron .ouk-intro-card .card-title,
+.jumbotron .card.bg-white.border-0 .card-title {
+    color: var(--primary-500);
+    font-size: 1.15rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.65rem;
+    text-decoration: none;
+}
+
+.jumbotron .card.bg-white.border-0 .card-title u {
+    text-decoration: none;
+    border-bottom: 2px solid var(--secondary-300);
+    padding-bottom: 0.15rem;
+}
+
+.jumbotron .ouk-intro-card .card-text,
+.jumbotron .card.bg-white.border-0 .card-text {
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.jumbotron .ouk-intro-card .card-footer,
+.jumbotron .card.bg-white.border-0 .card-footer {
+    background: transparent;
+    border-top: 1px solid #eee;
+    padding: 0.9rem 1.25rem 1.25rem;
+}
+
+.jumbotron .ouk-intro-card .btn,
+.jumbotron .card.bg-white.border-0 .btn-primary {
+    background: var(--primary-500) !important;
+    border-color: var(--primary-500) !important;
+    border-radius: 8px;
+    font-weight: 600;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.jumbotron .ouk-intro-card .btn:hover,
+.jumbotron .card.bg-white.border-0 .btn-primary:hover {
+    background: var(--primary-600) !important;
+    border-color: var(--primary-600) !important;
+    transform: translateY(-1px);
 }
 
 .format-cards .course-content .card-deck .card .card-overlay {
