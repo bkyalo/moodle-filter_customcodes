@@ -1581,8 +1581,8 @@ class text_filter extends \filtercodes_base_text_filter {
         $index = 0;
     	foreach ($sections as $section) {
             if ($section->uservisible && $section->name) {
-            	// Alternate number colors: green / pinkish coral
-            	$color = ($index % 2 === 0) ? '#149247' : '#ff7f50';
+            	// Alternate number colors: primary / secondary brand
+            	$color = ($index % 2 === 0) ? '#0C0B9A' : '#149247';
             	$url = new \moodle_url('/course/view.php', ['id' => $courseid, 'section' => $section->section]);
             	$html .= "<li style=\"--cardColor:{$color}\">";
             	$html .= '<div class="content">';
