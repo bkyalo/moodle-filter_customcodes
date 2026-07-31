@@ -1186,6 +1186,15 @@ table.ouk_intro_block { border: none; }
     margin-top: var(--labelOffset);
 }
 
+/* Force Kabarnet brand colors (overrides stale inline --cardColor) */
+.olcards li:nth-child(odd) {
+    --cardColor: #0C0B9A !important;
+}
+
+.olcards li:nth-child(even) {
+    --cardColor: #149247 !important;
+}
+
 .olcards li::before {
     content: counter(cardCount, decimal-leading-zero);
     background: var(--cardColor);
