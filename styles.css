@@ -75,6 +75,34 @@ kbd {
    Relevant to filters in classes/text_filter.php
    ============================================================ */
 
+/* Brand palette — Primary #0C0B9A / Secondary #149247 */
+:root {
+    --primary-color: #0C0B9A;
+    --primary-50: #ECEBF7;
+    --primary-100: #CECEEB;
+    --primary-200: #9E9DD7;
+    --primary-300: #6D6DC2;
+    --primary-400: #3D3CAE;
+    --primary-500: #0C0B9A;
+    --primary-600: #0A0983;
+    --primary-700: #08086C;
+    --primary-800: #070655;
+    --primary-900: #05043E;
+
+    --secondary-color: #149247;
+    --secondary-50: #ECF6F0;
+    --secondary-100: #D0E9DA;
+    --secondary-200: #A1D3B5;
+    --secondary-300: #72BE91;
+    --secondary-400: #43A86C;
+    --secondary-500: #149247;
+    --secondary-600: #117C3C;
+    --secondary-700: #0E6632;
+    --secondary-800: #0B5027;
+    --secondary-900: #083A1C;
+}
+
+
 /* ------ Course card format ------ */
 .course-summary-short-summary {
     display: none;
@@ -83,7 +111,7 @@ kbd {
 /* ------ {courseintropage} jumbotron gradient ------ */
 /* Overrides the inline style set by the PHP filter */
 .jumbotron.jumbotron-fluid.text-white.shadow {
-    background: linear-gradient(135deg, #ff7f50, #037b90) !important;
+    background: linear-gradient(135deg, #149247, #0C0B9A) !important;
 }
 
 .format-cards .course-content .card-deck .card .card-overlay {
@@ -96,7 +124,7 @@ kbd {
     right: 0;
     background: url(https://ouk.ac.ke/sites/default/files/OtherFiles/card-6.jpg);
     background-size: cover;
-    border-top: 15px solid #ff7f50;
+    border-top: 15px solid #149247;
 }
 
 /* ------ Teacher contact card ------ */
@@ -114,9 +142,9 @@ kbd {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #e9f5ff;
+    background-color: #ECEBF7;
     padding: 0.75rem 1rem;
-    border: 1px solid #b6dffd;
+    border: 1px solid #CECEEB;
     border-radius: 5px;
     cursor: pointer;
     font-weight: 500;
@@ -161,7 +189,7 @@ kbd {
 }
 
 .lesson-group-4 {
-    border-left: 5px solid #037b90;
+    border-left: 5px solid #0C0B9A;
 }
 
 .lesson-left {
@@ -191,7 +219,7 @@ kbd {
     margin: 0;
     font-size: 18px;
     font-family: 'Poppins', sans-serif;
-    color: #037b90;
+    color: #0C0B9A;
     font-weight: bold;
 }
 
@@ -264,17 +292,17 @@ kbd {
 }
 
 .blue-btn {
-    background-color: #037b90;
+    background-color: #0C0B9A;
     color: #fff;
     transition: background-color 0.3s ease;
 }
 
 .blue-btn:hover {
-    background-color: #025f6b;
+    background-color: #0A0983;
 }
 
 .custombox-header-thumb {
-    border-right: #037b90 5px solid;
+    border-right: #0C0B9A 5px solid;
 }
 
 /* ------ Block enroleasy responsive ------ */
@@ -299,14 +327,14 @@ kbd {
 .logout-button {
     display: inline-block;
     padding: 5px;
-    background-color: #ff7f50;
+    background-color: #149247;
     color: #fff;
     font-weight: 500;
     border-radius: 5px;
 }
 
 .logout-button:hover {
-    background-color: #e3664c;
+    background-color: #117C3C;
 }
 
 /* ------ Login page submit button ------ */
@@ -341,7 +369,7 @@ kbd {
 }
 
 .tab button {
-    background-color: #037b90;
+    background-color: #0C0B9A;
     float: left;
     border: 3px solid #ccc;
     outline: none;
@@ -358,7 +386,7 @@ kbd {
 }
 
 .tab button.active {
-    background-color: #ff7f50;
+    background-color: #149247;
 }
 
 .dstabcontent {
@@ -387,7 +415,7 @@ kbd {
     height: 50px;
     width: 50px;
     font-size: 30px;
-    background-color: #037b90;
+    background-color: #0C0B9A;
     color: white;
 }
 
@@ -422,7 +450,7 @@ details > summary {
     background: #f4f4f4;
     font-weight: bold;
     list-style-type: "";
-    color: #037b90;
+    color: #0C0B9A;
 }
 
 details > div {
@@ -457,7 +485,7 @@ details[open] > summary {
 }
 
 .fancytabs span {
-    background: #037b90;
+    background: #0C0B9A;
     padding: 10px;
     border: 3px solid #bbb;
     width: 100%;
@@ -469,7 +497,7 @@ details[open] > summary {
 }
 
 .fancytabs span:active {
-    background-color: #ff7f50;
+    background-color: #149247;
 }
 
 .readme {
@@ -479,7 +507,7 @@ details[open] > summary {
 }
 
 .readme a {
-    color: #037b90;
+    color: #0C0B9A;
 }
 
 /* ------ Hash-anchor accordion (URL hash toggle, distinct from Bootstrap accordion) ------ */
@@ -491,7 +519,7 @@ details[open] > summary {
 
 [id*="open-accordion"],
 [id*="close-accordion"] {
-    background: #037b90;
+    background: #0C0B9A;
     border-bottom: 1px solid #fff;
     line-height: 40px;
     height: 40px;
@@ -536,7 +564,7 @@ details[open] > summary {
 }
 
 .accordion-content {
-    background: #a9dfe8;
+    background: #CECEEB;
     height: 0;
     margin: -1px auto 0;
     padding: 0 2.5%;
@@ -599,7 +627,7 @@ details[open] > summary {
 }
 
 .path-mod-quiz #mod_quiz_navblock .qnbutton.thispage .thispageholder {
-    border: 3px solid #1f536b;
+    border: 3px solid #08086C;
 }
 
 .path-mod-quiz #mod_quiz_navblock .qnbutton.flagged .thispageholder {
@@ -681,7 +709,7 @@ div#fitem_id_maildisplay {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    background-color: #ff7f50;
+    background-color: #149247;
     border-radius: 4px;
     padding: 0.7rem;
 }
@@ -702,9 +730,9 @@ div#fitem_id_maildisplay {
 /* ------ Mod_Book styles ------ */
 .book_content {
     overflow: auto;
-    background-color: rgba(255, 127, 80, 0.3);
-    border-top: 4px solid #037b90;
-    border-bottom: 4px solid #ff7f50;
+    background-color: rgba(20, 146, 71, 0.3);
+    border-top: 4px solid #0C0B9A;
+    border-bottom: 4px solid #149247;
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
     padding: 5px;
@@ -715,7 +743,7 @@ div#fitem_id_maildisplay {
     min-height: 30px;
     color: white;
     padding: 15px 0 1px 25px;
-    background-color: #037b90;
+    background-color: #0C0B9A;
     box-shadow: 4px 4px 4px #888;
 }
 
@@ -760,7 +788,7 @@ div#fitem_id_maildisplay {
     min-height: 40px;
     margin-bottom: 25px;
     box-shadow: 3px 3px 3px #888;
-    background-color: #ff7f50;
+    background-color: #149247;
 }
 
 .oukbook_learningobjectives_block,
@@ -784,7 +812,7 @@ div#fitem_id_maildisplay {
     font-weight: 700;
     overflow: auto;
     border-bottom: 1px solid #000;
-    background-color: #037b90;
+    background-color: #0C0B9A;
     color: white;
 }
 
@@ -832,7 +860,7 @@ div#fitem_id_maildisplay {
     top: 0;
     width: 4px;
     height: 100%;
-    background: #ff7f50;
+    background: #149247;
 }
 
 .module-container .timeline .timeline-container {
@@ -849,7 +877,7 @@ div#fitem_id_maildisplay {
     border-radius: 50%;
     text-align: center;
     font-size: 2rem;
-    background: #037b90;
+    background: #0C0B9A;
 }
 
 .timeline .timeline-container .timeline-icon i {
@@ -897,7 +925,7 @@ div#fitem_id_maildisplay {
 }
 
 .timeline .timeline-container .timeline-body .timeline-title .badge2 {
-    background: #ff7f50;
+    background: #149247;
     padding: 4px 8px;
     border-radius: 3px;
     font-weight: bold;
@@ -912,7 +940,7 @@ div#fitem_id_maildisplay {
 
 .timeline .timeline-container.primary .badge,
 .timeline .timeline-container.primary .timeline-icon2 {
-    background: #ff7f50 !important;
+    background: #149247 !important;
     color: #ffffff;
 }
 
@@ -922,7 +950,7 @@ div#fitem_id_maildisplay {
 .timeline .timeline-container.warning .timeline-icon,
 .timeline .timeline-container.danger .badge,
 .timeline .timeline-container.danger .timeline-icon {
-    background: #037b90 !important;
+    background: #0C0B9A !important;
     color: #ffffff;
 }
 
@@ -934,7 +962,7 @@ div#fitem_id_maildisplay {
     font-weight: 400;
     font-size: 30px;
     text-align: center;
-    color: #ff7f50;
+    color: #149247;
     text-transform: uppercase;
     word-spacing: 1px;
     letter-spacing: 2px;
@@ -971,7 +999,7 @@ div#fitem_id_maildisplay {
 }
 
 .six h1:before {
-    background-color: #ff7f50;
+    background-color: #149247;
     left: 45px;
     width: 90px;
 }
@@ -998,7 +1026,7 @@ table.ouk_intro_block { border: none; }
 
 .format-tiles .course-content ul.tiles .tile,
 .format-tiles li.section:not(#section-0) .course-section-header {
-    border-top-color: #037b90;
+    border-top-color: #0C0B9A;
 }
 
 .format-tiles .course-content ul.tiles .tile { border-top: 15px solid transparent; }
@@ -1011,7 +1039,7 @@ table.ouk_intro_block { border: none; }
 .container-fluid { margin-top: 15px; }
 
 .custombox-header-caption.definition h4 {
-    color: #ff7f50;
+    color: #149247;
     font-weight: bolder;
 }
 
@@ -1085,7 +1113,7 @@ table.ouk_intro_block { border: none; }
 }
 
 .olcards li .content:hover {
-    background-color: #ff7f50;
+    background-color: #149247;
 }
 
 .olcards li .content::before {
@@ -1192,7 +1220,7 @@ table.ouk_intro_block { border: none; }
     background: var(--secondary-color);
     color: white;
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(255, 127, 80, 0.3);
+    box-shadow: 0 8px 20px rgba(20, 146, 71, 0.3);
     font-weight: 600;
 }
 
@@ -1402,7 +1430,7 @@ table.ouk_intro_block { border: none; }
     align-items: center;
     gap: 20px;
     padding: 20px;
-    border: 2px solid #037b90;
+    border: 2px solid #0C0B9A;
     border-radius: 10px;
     background-color: #f9f9f9;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -1423,7 +1451,7 @@ table.ouk_intro_block { border: none; }
 }
 
 .module-overview-title {
-    color: #037b90;
+    color: #0C0B9A;
     font-weight: bold;
 }
 
@@ -1433,7 +1461,7 @@ table.ouk_intro_block { border: none; }
         align-items: center;
         text-align: center;
         padding: 5px;
-        border: 1px solid #037b90;
+        border: 1px solid #0C0B9A;
     }
 
     .module-overview-image {
@@ -1471,7 +1499,7 @@ table.ouk_intro_block { border: none; }
 }
 
 .about-course__description a {
-    color: #037b90;
+    color: #0C0B9A;
     font-weight: 500;
     text-decoration: none;
 }
@@ -1495,7 +1523,7 @@ table.ouk_intro_block { border: none; }
 
 .key-skill-tag {
     display: inline-block;
-    background-color: #ff7f5050;
+    background-color: #14924750;
     color: #000;
     font-family: Arial, sans-serif;
     font-size: 14px;
@@ -1543,7 +1571,7 @@ table.ouk_intro_block { border: none; }
     font-size: 18px;
     font-weight: 600;
     cursor: pointer;
-    background-color: #037b9020;
+    background-color: #0C0B9A20;
     border: 1px solid #ddd;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -1679,8 +1707,8 @@ table.ouk_intro_block { border: none; }
     transition: all 0.3s ease-in-out;
 }
 
-#learning-materials    { background-color: #e0f4f7; border-left: 8px solid #037b90; }
-#activities-engagement { background-color: #ffe5de; border-left: 8px solid #ff7f50; }
+#learning-materials    { background-color: #ECEBF7; border-left: 8px solid #0C0B9A; }
+#activities-engagement { background-color: #ECF6F0; border-left: 8px solid #149247; }
 #assessment            { background-color: #cceff1; border-left: 8px solid #025f6d; }
 #additional-resources  { background-color: #ffd1c1; border-left: 8px solid #f76c41; }
 
@@ -1724,7 +1752,7 @@ table.ouk_intro_block { border: none; }
    ============================================================ */
 ol.HELM_parts li::before {
     content: counter(helm-parts, counter) ".";
-    background: #037b90;
+    background: #0C0B9A;
     color: #fff;
     min-width: 30px;
 }
@@ -1733,18 +1761,18 @@ ol.HELM_parts li::before {
     position: relative;
     padding: 10px 20px;
     margin: 30px 0;
-    border-left: 4px solid #037b90;
+    border-left: 4px solid #0C0B9A;
     box-shadow: rgba(0, 0, 0, 0.16) 0 1px 4px;
 }
 
 .mat-head {
     font-weight: bold;
-    color: #037b90b0;
+    color: #0C0B9AB0;
 }
 
 .mat-exam {
     font-weight: bold;
-    color: #ff7f50;
+    color: #149247;
     padding-top: 20px;
 }
 
@@ -1774,7 +1802,7 @@ ol.HELM_parts li::before {
 }
 
 .mat-solution h4 {
-    color: #ff7f50;
+    color: #149247;
     margin-top: 0;
     margin-bottom: 0.5rem;
     font-weight: 600;
@@ -1793,7 +1821,7 @@ ol.HELM_parts li::before {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #ff7f50;
+    background-color: #149247;
     text-align: center;
     color: white;
 }
@@ -1812,7 +1840,7 @@ ol.HELM_parts li::before {
     min-height: 400px;
     width: 100%;
     padding: 20px;
-    background-color: #ff7f5030;
+    background-color: #14924730;
     color: #333;
     text-align: left;
 }
@@ -1828,7 +1856,7 @@ ol.HELM_parts li::before {
 .snap-image {
     display: block;
     margin: 20px auto;
-    border: 2px solid #037b9070;
+    border: 2px solid #0C0B9A70;
     border-radius: 4px;
 }
 
@@ -1847,7 +1875,7 @@ ol.HELM_parts li::before {
     max-width: 100%;
     height: auto;
     border-radius: 8px;
-    border: 3px solid #037b9070;
+    border: 3px solid #0C0B9A70;
 }
 
 .snap-content caption {
