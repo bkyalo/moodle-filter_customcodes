@@ -1592,7 +1592,6 @@ class text_filter extends \filtercodes_base_text_filter {
                 $index++;
             }
     	}
-    	}
     	$html .= '</ol>';
     	return $html;
     }
