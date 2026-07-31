@@ -1578,16 +1578,20 @@ class text_filter extends \filtercodes_base_text_filter {
     	array_pop($sections); // Removes the last element from the array
 
     	$html = '<ol class="olcards">';
+        $index = 0;
     	foreach ($sections as $section) {
             if ($section->uservisible && $section->name) {
-            	$color = $section->section % 2 == 0 ? '#0C0B9A' : '#149247'; // Alternate color based on section number
+            	// Alternate number colors: green / pinkish coral
+            	$color = ($index % 2 === 0) ? '#149247' : '#ff7f50';
             	$url = new \moodle_url('/course/view.php', ['id' => $courseid, 'section' => $section->section]);
             	$html .= "<li style=\"--cardColor:{$color}\">";
             	$html .= '<div class="content">';
             	$html .= '<a style="color:black; text-decoration: none" href="' . $url . '">';
             	$html .= '<div class="title">' . format_string($section->name) . '</div>';
             	$html .= '</a></div></li>';
+                $index++;
             }
+    	}
     	}
     	$html .= '</ol>';
     	return $html;

@@ -1188,8 +1188,8 @@ table.ouk_intro_block { border: none; }
 
 .olcards li::before {
     content: counter(cardCount, decimal-leading-zero);
-    background: #ddd;
-    color: var(--cardColor);
+    background: var(--cardColor);
+    color: #fff;
     font-size: 2em;
     font-weight: 700;
     transform: translateY(calc(-1 * var(--labelOffset)));
@@ -1226,7 +1226,12 @@ table.ouk_intro_block { border: none; }
 }
 
 .olcards li .content:hover {
-    background-color: #149247;
+    background-color: var(--cardColor);
+    opacity: 1;
+}
+
+.olcards li .content:hover a {
+    color: #fff !important;
 }
 
 .olcards li .content::before {
